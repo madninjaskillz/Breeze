@@ -65,8 +65,7 @@ namespace Breeze
 
             if (Storage.FileSystemStorage.FileExists(pakPath))
             {
-                StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation
-                    .GetFileAsync(pakPath).GetAwaiter().GetResult();
+                StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(pakPath).GetAwaiter().GetResult();
 
                 Stream stream = packBuffer.OpenStreamForReadAsync().Result;
                 int streamLength = (int) stream.Length;
