@@ -60,6 +60,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileLocation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ReflectionHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StateHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\TextureHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UIHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\VectorHelpers.cs" />
