@@ -4,7 +4,7 @@
 Breeze is a collection of helper services designed to make working with monogame simpler and easier. It includes:
 
 * Breeze.UI - An MVVM UI framework heavily influenced by WinRT XAML
-* Breeze.Storage - An abstracted storage provider allowing one interface to do everything you need on any platform no matter wether you are in app storage, local storage or PAK style folder blobs
+* Breeze.Storage - An abstracted storage provider allowing one interface to do everything you need on any platform no matter whether you are in app storage, local storage or PAK style folder blobs
 * Breeze.Font - A wrapper around sprite fonts that allows auto selection of font based on render size.
 * Breeze.AssetLibrary - Empowers you to stream assets on demand with intelligent caching
 * Breeze.Benchmark - Benchmark code simply within a using statements scope with on screen charts when required.
@@ -12,10 +12,12 @@ Breeze is a collection of helper services designed to make working with monogame
 * Breeze.SpriteBatch - A wrapped SpriteBatch with many helper methods to make some basic tasks basic.
 * Breeze.Input - Event driven Input service supporting KB+Mouse/TouchScreen and gamepad with ability to remap controls, ignore inputs when screen is not focused and supporting advanced combinations such as modifier keys and mouse buttons, button holds and double clicks.
 
-## Background
+#### Background
 Breeze started life as a framework for my own personal project but as it grew more competent I realised it needed to be separated out into its own project. Early versions of this may make this very apparent with references to the previous project and maybe the odd hardcoded value.
 
-## Using Breeze
+As such documentation is currently behind the curve and the following is a very brief overview.
+
+#### Using Breeze
 Currently breeze is not modular as the main part, the main UI element requires most of the other parts to function properly.
 Once you have added breeze to your project, you will need to modify you main Game.CS:
 
@@ -43,8 +45,10 @@ And finally, in your Draw(), after the graphicsDevice.Clear but before any sprit
     Solids.Breeze.Draw(gameTime, Solids.ShowDebug);
 
   You are now up and running.
+    
+### Using Breeze.UI
 
-## Creating a Screen
+#### Creating a Screen
 
 I would recommend creating a "screens" folder in the games root folder, and another folder for each screen.
 
@@ -55,7 +59,7 @@ In each of those subfolders we would expect to see three files:
 
 If you have used WinRT XAML this should all be fairly natural.
 
-### Code Behind
+#### Code Behind
 The Screen.cs should inherit from DataboundScreen. This is similar to the 'code behind' of XAML. You will need to include the following:
 
   
@@ -73,7 +77,7 @@ The Screen.cs should inherit from DataboundScreen. This is similar to the 'code 
 
 Hopefully, this boilerplate will get a little more sane soon.
 
-### ViewModel
+#### ViewModel
 
 The ViewModel.cs should inherit from MGUIViewModel.
 
@@ -84,7 +88,9 @@ Bindable variables take a very similar pattern to a common WinRT pattern:
     public bool ForgotEnabled { get => forgotEnabled; set => Set(ref forgotEnabled, value); }
 
 
-### View
+#### View
+
+UI is based on a screen of a screen from 0 to 1 in x+y directions. However, when a child of an element, 0,0 position is its parents position but width and height is still the same scale. (options will be added to make width and height optionally scaled to parents size)
 
 While it can be defined with code in the code behind, it is recommended to use the XML to construct the view. Here is an example:
 
@@ -126,6 +132,28 @@ While it can be defined with code in the code behind, it is recommended to use t
       </BoxShadowAsset>
     </Screen>
 
+### Using Breeze.Storage
 
+There are three storage systems available (all using same interface)
 
+* FileSystemStorage - for dealing with raw file system
+* UserStorage - for dealing with UserStorage (my documents etc - depends on platform)
+* DatfileStorage - for dealing with a pak file (one per project currently)
 
+There are then a number of helper classes, until documentation improves, I suggest intellisense, but an example:
+
+    if (Solids.Breeze.Storage.UserStorage.FileExists("Logins.json"))
+    {
+    	logInData = Solids.Breeze.Storage.UserStorage.ReadJson<List<LogInData>>("Logins.json");
+    }
+
+### Using Breeze.Benchmark
+
+    using (new Breeze.BenchMark("Benchmark name"))
+    {
+    	//Long Running Task
+    }
+    
+### Using Breeze.Debug
+
+	BreezeDebug.WriteLine("oh hai");
