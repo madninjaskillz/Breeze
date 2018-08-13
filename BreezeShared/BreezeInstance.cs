@@ -63,27 +63,32 @@ namespace Breeze
             string pakPath = ContentPathRelative.GetFile("Content.pak");
             Debug.WriteLine(FileLocation.InstalledLocation);
 
-            StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(pakPath).GetAwaiter().GetResult();
+            if (Storage.FileSystemStorage.FileExists(pakPath))
+            {
+                StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation
+                    .GetFileAsync(pakPath).GetAwaiter().GetResult();
 
-            Stream stream = packBuffer.OpenStreamForReadAsync().Result;
-            int streamLength = (int)stream.Length;
-            byte[] tmp = new byte[streamLength];
-            stream.Read(tmp, 0, tmp.Length);
+                Stream stream = packBuffer.OpenStreamForReadAsync().Result;
+                int streamLength = (int) stream.Length;
+                byte[] tmp = new byte[streamLength];
+                stream.Read(tmp, 0, tmp.Length);
 
-            string tocPath = ContentPathRelative.GetFile("Content.toc");
+                string tocPath = ContentPathRelative.GetFile("Content.toc");
 
-            Debug.WriteLine(FileLocation.InstalledLocation);
-            Debug.WriteLine(tocPath);
-            Debug.WriteLine(pakPath);
+                Debug.WriteLine(FileLocation.InstalledLocation);
+                Debug.WriteLine(tocPath);
+                Debug.WriteLine(pakPath);
 
-            var tocBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(tocPath).GetAwaiter().GetResult();
+                var tocBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(tocPath)
+                    .GetAwaiter().GetResult();
 
-            string json = FileIO.ReadTextAsync(tocBuffer).GetAwaiter().GetResult();
+                string json = FileIO.ReadTextAsync(tocBuffer).GetAwaiter().GetResult();
 
 
 
-            Storage.DatfileStorage.TabletOfContents = JsonConvert.DeserializeObject<List<FileEntry>>(json);
-            Storage.DatfileStorage.DataStorage = tmp;
+                Storage.DatfileStorage.TabletOfContents = JsonConvert.DeserializeObject<List<FileEntry>>(json);
+                Storage.DatfileStorage.DataStorage = tmp;
+            }
 
             Debug.WriteLine("test!");
             //Solids.Breeze.Storage.Init(Solids.ContentPathRelative,tmp).ConfigureAwait(false).GetAwaiter().GetResult();
