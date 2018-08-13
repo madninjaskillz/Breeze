@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>5752243e-9417-4ef2-a49d-47dcc28efa99</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Breeze</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssetLibrary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\BezierLineAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\BoxShadowAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ButtonAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ButtonBasics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ButtonVisualDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\CentredImageAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ContainerAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundButtonAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataBoundFontAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ImageAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\InteractiveAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ListAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\PatternAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\RectangleAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ScreenAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\SimpleButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\SinglePixelLineAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\StackAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\StaticTemplates\CheckBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\StaticTemplates\CloseButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\StaticTemplates\StaticTemplate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\StaticTemplates\TextBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\TemplateAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\TextBoxAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\XmlClasses.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\XMLClass\Base.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BaseScreen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BenchMark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\DatfileStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\EasyStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\FileSystemEasyStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\Helpers\ColorHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\Helpers\FileHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\Helpers\FileNameHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\Helpers\GaussianBlur.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DebugSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\BezierHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\EnumExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SpriteBatchHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\IEzmuzeStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\UserEasyStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Class1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FontSystem\FontClasses.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FontSystem\FontRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FontSystem\SymbolEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\FileLocation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ReflectionHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StateHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\TextureHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\UIHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\VectorHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\ActionKeys.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\EzmuzeInputState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\InputBindings\ContextMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\InputBindings\InputBindings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\InputBindings\Sequencer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\InputBindings\UserInterface.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\InputService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\InputState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\MouseButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\ShiftKeys.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InputService\Symbol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BreezeInstance.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ScreenAbstractor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ScreenManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Screens\DataboundScreen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Screens\DialogScreen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Screens\IScreen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Screens\MGUIViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Screens\XuiDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SmartSpriteBatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Solids.cs" />
+  </ItemGroup>
+</Project>
