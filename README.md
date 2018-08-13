@@ -12,6 +12,8 @@ Breeze is a collection of helper services designed to make working with monogame
 * Breeze.SpriteBatch - A wrapped SpriteBatch with many helper methods to make some basic tasks basic.
 * Breeze.Input - Event driven Input service supporting KB+Mouse/TouchScreen and gamepad with ability to remap controls, ignore inputs when screen is not focused and supporting advanced combinations such as modifier keys and mouse buttons, button holds and double clicks.
 
+![Example of Breeze UI](https://github.com/madninjaskillz/Breeze/raw/master/UIExample.png)
+
 #### Background
 Breeze started life as a framework for my own personal project but as it grew more competent I realised it needed to be separated out into its own project. Early versions of this may make this very apparent with references to the previous project and maybe the odd hardcoded value.
 
