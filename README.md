@@ -21,6 +21,11 @@ As such documentation is currently behind the curve and the following is a very 
 
 #### Using Breeze
 Currently breeze is not modular as the main part, the main UI element requires most of the other parts to function properly.
+
+First job is to add the Breeze.Shared and the Breeze.PLATFORM projects (currently only UWP is commited).
+
+Reference these in your project and then add the BasicBlur.fx to your main projects Content project
+
 Once you have added breeze to your project, you will need to modify you main Game.CS:
 
 Firstly, you need an instance variable to use Breeze of type BreezeInstance. For this example we will assume (for simplicity sakes we have a public static in Game.CS)
