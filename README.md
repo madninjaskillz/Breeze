@@ -147,6 +147,9 @@ There are then a number of helper classes, until documentation improves, I sugge
     	logInData = Solids.Breeze.Storage.UserStorage.ReadJson<List<LogInData>>("Logins.json");
     }
 
+Also included is PakBuilder project- used to construct pak files for Breeze.Storage.DatfileStorage - this can be used to construct a pak file as part of the build process (which is how I currently use it) meaning you are just deploying two files (a .pak and a .toc) and you are not forced to use Content Pipeline.
+
+
 ### Using Breeze.Benchmark
 
     using (new Breeze.BenchMark("Benchmark name"))
