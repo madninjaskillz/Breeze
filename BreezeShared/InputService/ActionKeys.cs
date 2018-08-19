@@ -30,7 +30,8 @@ namespace Breeze.Services.InputService
             //RightShift3,
             SelectArea,
             CloseModal,
-            Split
+            Split,
+            ToggleFullScreen
         }
 
         public class InputBinding

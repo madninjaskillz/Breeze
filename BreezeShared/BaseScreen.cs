@@ -630,7 +630,10 @@ namespace Breeze.Screens
         }
 
 
+        public virtual void Draw(GameTime gameTime)
+        {
 
+        }
         public Texture2D Draw(GameTime gameTime, float opacity, Texture2D preDrawTexture)
         {
             UpdateAllAssets();
@@ -689,6 +692,8 @@ namespace Breeze.Screens
 
             DrawAssets(AllAssets, opacity, preDrawTexture);
             DrawAssets(RealTime.Select(x => (DataboundAsset)x).ToList(), opacity, preDrawTexture);
+
+            Draw(gameTime);
 
             Solids.Instance.SpriteBatch.Scissor = null;
 

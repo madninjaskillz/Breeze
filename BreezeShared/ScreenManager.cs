@@ -137,7 +137,7 @@ namespace Breeze
                 Texture2D previousTexture = null;
 
 
-                var smartList = Solids.Instance.ScreenManager.SmartList().ToList();
+                var smartList = SmartList().ToList();
 
                 if (smartList.Any(t => t.IsBackgroundBlocking))
                 {
@@ -278,7 +278,7 @@ namespace Breeze
             //    }
             //}
 
-            public void AddView<T>() where T : BaseScreen, new()
+            public T AddView<T>() where T : BaseScreen, new()
             {
                 if (screenManager.screens.All(t => (t as T) == null))
                 {
@@ -286,10 +286,13 @@ namespace Breeze
                     ((T)screen).Initialise();
                     screenManager.Add(screen);
                     screenManager.BringToFront(screen);
-                }
 
-                //screenManager.RemoveAll<BackgroundScreen>();
-                //screenManager.RemoveAll<FilterScreen>();
+                    return screen;
+                }
+                else
+                {
+                    return (T)screenManager.screens.First(t => (t as T) != null);
+                }
             }
 
             public void AddView(BaseScreen screen)

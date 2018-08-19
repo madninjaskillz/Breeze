@@ -48,8 +48,8 @@ namespace Breeze
 #if WINDOWS_UAP
             StorageFolder folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
 
-            ContentPath = folder.Path + "\\Ezmuze.Content\\";
-            ContentPathRelative = "Ezmuze.Content\\";
+            ContentPath = folder.Path + "\\Content\\";
+            ContentPathRelative = "Content\\";
 #elif ANDROID
 
             Solids.ContentPath = "Content\\";
@@ -60,26 +60,21 @@ namespace Breeze
 #endif
 
 #if WINDOWS_UAP
-            string pakPath = ContentPathRelative.GetFile("Content.pak");
+            //string pakPath = ContentPathRelative.GetFilePath("Content.pak");
             Debug.WriteLine(FileLocation.InstalledLocation);
 
-            if (Storage.FileSystemStorage.FileExists(pakPath))
+            if (Storage.FileSystemStorage.FileExists(ContentPath.GetFilePath("Content.pak")))
             {
-                StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(pakPath).GetAwaiter().GetResult();
+                StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(ContentPathRelative.GetFilePath("Content.pak")).GetAwaiter().GetResult();
 
                 Stream stream = packBuffer.OpenStreamForReadAsync().Result;
-                int streamLength = (int) stream.Length;
+                int streamLength = (int)stream.Length;
                 byte[] tmp = new byte[streamLength];
                 stream.Read(tmp, 0, tmp.Length);
 
-                string tocPath = ContentPathRelative.GetFile("Content.toc");
+                string tocPath = ContentPathRelative.GetFilePath("Content.toc");
 
-                Debug.WriteLine(FileLocation.InstalledLocation);
-                Debug.WriteLine(tocPath);
-                Debug.WriteLine(pakPath);
-
-                var tocBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(tocPath)
-                    .GetAwaiter().GetResult();
+                var tocBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(tocPath).GetAwaiter().GetResult();
 
                 string json = FileIO.ReadTextAsync(tocBuffer).GetAwaiter().GetResult();
 
@@ -132,10 +127,10 @@ namespace Breeze
             Fonts.Fonts.Add("Segoe", Fonts.Segoe);
             Fonts.Fonts.Add("SegoeLight", Fonts.SegoeLight);
 
-            
+
         }
 
-      
+
         public void Draw(GameTime gameTime, bool showDebug)
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -162,10 +157,9 @@ namespace Breeze
 
             if (InputService != null)
             {
-                using (new SmartSpriteBatchManager(SpriteBatch))
-                {
-                    InputService.Draw(gameTime);
-                }
+                Solids.Instance.SpriteBatch.Begin();
+                InputService.Draw(gameTime);
+                Solids.Instance.SpriteBatch.End();
             }
 
 
@@ -247,7 +241,7 @@ namespace Breeze
             }
         }
 
-      
+
         public void TextInputHandler(object sender, TextInputEventArgs e)
         {
             if (!char.IsControl(e.Character))
@@ -260,7 +254,7 @@ namespace Breeze
         {
             InputService.PressedChars = bufferedInput;
             bufferedInput = new List<char>();
-            
+
             // TODO: Add your update logic here
 
             InputService?.Update(gameTime);

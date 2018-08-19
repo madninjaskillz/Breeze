@@ -35,7 +35,7 @@ namespace Breeze.Helpers
             }
 
             StorageFolder folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            string xx = Solids.Instance.ContentPathRelative.GetFile(filename);
+            string xx = Solids.Instance.ContentPathRelative.GetFilePath(filename);
             using (Stream fs = folder.OpenStreamForReadAsync(xx).Result)
             {
                 return Texture2D.FromStream(gd, fs);

@@ -470,6 +470,7 @@ namespace Breeze.Services.InputService
             {ActionKeys.SelectArea, Keys.LeftShift },
             {ActionKeys.CloseModal, Keys.Escape },
             {ActionKeys.Split, Keys.S },
+            
         };
 
         public static Dictionary<ActionKeys, MouseButtons> MouseButtonsMappings = new Dictionary<ActionKeys, MouseButtons>
