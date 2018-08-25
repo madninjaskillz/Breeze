@@ -28,8 +28,8 @@ namespace Breeze
         public ScreenManager ScreenManager { get; set; }
         public SmartSpriteBatch SpriteBatch { get; set; }
         public InputService InputService { get; set; }
-        internal Rectangle Bounds { get; set; }
-        public bool ShowDebug { get; set; }
+        public Rectangle Bounds { get; set; }
+        public bool ShowDebug { get; set; } = false;
         public DebugSystem DebugSystem = new DebugSystem();
         public FrameCounter FrameCounter = new FrameCounter();
         public Storage.Storage Storage { get; set; } = new Storage.Storage();
@@ -136,12 +136,12 @@ namespace Breeze
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             FrameCounter.Update(deltaTime);
 
-            if (SpriteBatch.GraphicsDevice.Viewport.Bounds != Solids.Bounds)
-            {
-                Solids.Bounds = SpriteBatch.GraphicsDevice.Viewport.Bounds;
-                Bounds = SpriteBatch.GraphicsDevice.Viewport.Bounds;
-                //Solids.DefaultScreenTarget = new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Bounds.Width, Solids.Bounds.Height);
-            }
+            //if (SpriteBatch.GraphicsDevice.Viewport.Bounds != Solids.Bounds)
+            //{
+            //    Solids.Bounds = SpriteBatch.GraphicsDevice.Viewport.Bounds;
+            //    Bounds = SpriteBatch.GraphicsDevice.Viewport.Bounds;
+            //    //Solids.DefaultScreenTarget = new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Bounds.Width, Solids.Bounds.Height);
+            //}
 
             ScreenManager.Draw(SpriteBatch, gameTime);
 

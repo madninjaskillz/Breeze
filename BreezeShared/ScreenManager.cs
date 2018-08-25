@@ -208,14 +208,14 @@ namespace Breeze
                 //Solids.Instance.SpriteBatch.Draw(txt, new Rectangle(Solids.Bounds.X - width, Solids.Bounds.Y-height,width,height),null, Color.White);
                 //Solids.Instance.SpriteBatch.ForceEnd();
 
-                if (spriteBatch.GraphicsDevice.Viewport.Bounds != previousScreenBounds || Solids.Instance.ScreenManager.ToList().Any(t => t is BaseScreen && !((BaseScreen)t).BoundsSet))
+           //     if (spriteBatch.GraphicsDevice.Viewport.Bounds != previousScreenBounds || Solids.Instance.ScreenManager.ToList().Any(t => t is BaseScreen && !((BaseScreen)t).BoundsSet))
                 {
-                    foreach (BaseScreen screen in Solids.Instance.ScreenManager.SmartList().Where(t => t is BaseScreen && ((BaseScreen)t).IsFullScreen))
+                    foreach (BaseScreen screen in SmartList().Where(t => t is BaseScreen && ((BaseScreen)t).IsFullScreen))
                     {
                         screen.SetBounds(spriteBatch.GraphicsDevice.Viewport.Bounds);
                     }
 
-                    previousScreenBounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
+                  //  previousScreenBounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
                 }
 
                 //if (Solids.Instance.InputService != null)
