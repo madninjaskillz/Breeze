@@ -32,6 +32,7 @@ namespace Breeze
         public bool ShowDebug { get; set; } = false;
         public DebugSystem DebugSystem = new DebugSystem();
         public FrameCounter FrameCounter = new FrameCounter();
+        public GaussianBlur GaussianBlur;
         public Storage.Storage Storage { get; set; } = new Storage.Storage();
 
         public BreezeInstance(ContentManager contentManager, SpriteBatch spriteBatch, Game game)
@@ -39,7 +40,7 @@ namespace Breeze
             ScreenManager = new ScreenManager();
             SpriteBatch = new SmartSpriteBatch(spriteBatch.GraphicsDevice);
             AssetLibrary = new AssetLibrary(SpriteBatch);
-            Solids.GaussianBlur = new Breeze.Helpers.GaussianBlur(game);
+            GaussianBlur = new Breeze.Helpers.GaussianBlur(game);
             InputService = new InputService();
 
 

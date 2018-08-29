@@ -14,7 +14,12 @@ namespace Breeze
     {
         //todo - most of this should be in the instance with an easy way to grab it
         internal static Random Random = new Random();
-        internal static GaussianBlur GaussianBlur;
+
+        internal static GaussianBlur GaussianBlur
+        {
+            get => Instance.GaussianBlur;
+            set => Instance.GaussianBlur = value;
+        }
         public static Rectangle Bounds { get; set; }
         internal static Dictionary<string, DataboundAsset> GlobalTemplates = new Dictionary<string, DataboundAsset>();
         
