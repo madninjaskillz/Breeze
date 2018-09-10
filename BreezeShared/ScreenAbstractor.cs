@@ -29,7 +29,7 @@ namespace Breeze
 
             if (input.Value.Boundless)
             {
-                b = new FloatRectangle(Solids.Bounds);
+                b = new FloatRectangle(Solids.Instance.Bounds);
             }
 
             return new FloatRectangle(

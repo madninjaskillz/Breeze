@@ -662,14 +662,14 @@ namespace Breeze.Screens
             {
                 using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch, SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.AnisotropicClamp, DepthStencilState.None, null, null, null))
                 {
-                    Solids.Instance.SpriteBatch.Draw(preDrawTexture, Solids.Bounds, null, Color.White);
+                    Solids.Instance.SpriteBatch.Draw(preDrawTexture, Solids.Instance.Bounds, null, Color.White);
                 }
 
                 if (DimBackground)
                 {
                     using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch, SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, null, null, null))
                     {
-                        Solids.Instance.SpriteBatch.DrawSolidRectangle(new FloatRectangle(Solids.Bounds), Color.Black * BGdim);
+                        Solids.Instance.SpriteBatch.DrawSolidRectangle(new FloatRectangle(Solids.Instance.Bounds), Color.Black * BGdim);
                     }
                 }
 
@@ -681,7 +681,7 @@ namespace Breeze.Screens
 
             if (BGdim > 0)
             {
-                Solids.Instance.SpriteBatch.DrawSolidRectangle(new FloatRectangle(Solids.Bounds), Color.Black * BGdim);
+                Solids.Instance.SpriteBatch.DrawSolidRectangle(new FloatRectangle(Solids.Instance.Bounds), Color.Black * BGdim);
             }
 
             if (WindowClip != null)

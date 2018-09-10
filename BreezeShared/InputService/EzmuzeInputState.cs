@@ -50,7 +50,7 @@ namespace Breeze.Services.InputService
 
                                     PrimaryDown = true;
 
-                                    if (Vector2.Distance(xp, PrimaryHoldStartPos) > Solids.Bounds.Width / 16f && PrimaryDownCount<100)
+                                    if (Vector2.Distance(xp, PrimaryHoldStartPos) > Solids.Instance.Bounds.Width / 16f && PrimaryDownCount<100)
                                     {
                                         PrimaryDownCount = 0;
                                     }

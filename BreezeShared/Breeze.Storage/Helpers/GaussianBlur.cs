@@ -96,7 +96,7 @@ namespace Breeze.Helpers
                 {
                     //Solids.Instance.SpriteBatch.ForceBegin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, Effect, null);
 
-                    Solids.Instance.SpriteBatch.Draw(sprite, Solids.Bounds, null, Color.White * bGdim);
+                    Solids.Instance.SpriteBatch.Draw(sprite, Solids.Instance.Bounds, null, Color.White * bGdim);
                 }
             }
         }

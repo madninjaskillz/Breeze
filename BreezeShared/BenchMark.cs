@@ -36,6 +36,7 @@ namespace Breeze
 
     public class BenchMarkDetails
     {
+        public TimeSpan FrameTime { get; set; } = TimeSpan.Zero;
         public string Key { get; set; }
         public int NumberOfTimesRun { get; set; } = 0;
         public TimeSpan ShortestTime { get; set; } = TimeSpan.MaxValue;
@@ -52,11 +53,23 @@ namespace Breeze
     {
         public string Key { get; set; }
         public DateTime StartTime { get; set; }
-        public BenchMark([CallerMemberName] string key = null)
+        //public BenchMark([CallerMemberName] string key = null)
+        //{
+        //    Key = key;
+        //    StartTime = DateTime.Now;
+        //}
+
+        public BenchMark(string txt ="",[CallerMemberName] string key = null)
         {
             Key = key;
+            if (!string.IsNullOrWhiteSpace(txt))
+            {
+                Key = txt + ": " + key;
+            }
+
             StartTime = DateTime.Now;
         }
+
         public void Dispose()
         {
             TimeSpan timeRun = (DateTime.Now - StartTime);
@@ -95,6 +108,7 @@ namespace Breeze
                 }
             }
 
+            BenchMarkProvider.BenchMarks[Key].FrameTime = BenchMarkProvider.BenchMarks[Key].FrameTime + timeRun;
             BenchMarkProvider.BenchMarks[Key].History[BenchMarkProvider.FramePointer % BenchMarkProvider.Steps] = (int)timeRun.TotalMilliseconds;
         }
     }

@@ -20,7 +20,7 @@ namespace Breeze
             get => Instance.GaussianBlur;
             set => Instance.GaussianBlur = value;
         }
-        public static Rectangle Bounds { get; set; }
+       // public static Rectangle Bounds { get; set; }
         internal static Dictionary<string, DataboundAsset> GlobalTemplates = new Dictionary<string, DataboundAsset>();
         
         public static string AssetBase { get; set; } = "";

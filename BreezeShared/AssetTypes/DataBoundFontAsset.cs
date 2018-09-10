@@ -254,7 +254,7 @@ namespace Breeze.AssetTypes
                     Solids.Instance.SpriteBatch.Scissor = tclip.ToRectangle();
 
 
-                    Rectangle tmp = Solids.Bounds;
+                    Rectangle tmp = Solids.Instance.Bounds;
                     if (tclip.HasValue)
                     {
                         tmp = tclip.Clamp(scissorRect).ToRectangle;

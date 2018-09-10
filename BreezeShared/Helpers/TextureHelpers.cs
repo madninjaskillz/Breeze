@@ -20,7 +20,7 @@ namespace Breeze.Helpers
         {
             if (!woot.HasValue)
             {
-                return Solids.Bounds;
+                return Solids.Instance.Bounds;
             }
 
             return woot.Value.ToRectangle;
@@ -56,7 +56,7 @@ namespace Breeze.Helpers
 
         public static RenderTarget2D GetRenderTarget()
         {
-            return new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Bounds.Width, Solids.Bounds.Height);
+            return new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Instance.Bounds.Width, Solids.Instance.Bounds.Height);
         }
        
         public static Texture2D ConvertToTexture(this RenderTarget2D renderTarget2D, RenderTarget2D target2D)
@@ -70,7 +70,7 @@ namespace Breeze.Helpers
 
             using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch, SpriteSortMode.Immediate, BlendState.AlphaBlend, Solids.SamplerState))
             {
-                Solids.Instance.SpriteBatch.Draw(renderTarget2D, Solids.Bounds, null, Color.White);
+                Solids.Instance.SpriteBatch.Draw(renderTarget2D, Solids.Instance.Bounds, null, Color.White);
             }
             Solids.Instance.SpriteBatch.GraphicsDevice.SetRenderTarget(target2D);
             //Solids.Instance.SpriteBatch.GraphicsDevice.Clear(Color.Black);
@@ -96,7 +96,7 @@ namespace Breeze.Helpers
             // TODO: Add your drawing code here
             using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch, SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, effect))
             {
-                Solids.Instance.SpriteBatch.Draw(tex, Solids.Bounds, null, Color.White);
+                Solids.Instance.SpriteBatch.Draw(tex, Solids.Instance.Bounds, null, Color.White);
             }
 
             

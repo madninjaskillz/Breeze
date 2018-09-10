@@ -132,7 +132,7 @@ namespace Breeze
 
             try
             {
-                Solids.Bounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
+                Solids.Instance.Bounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
 
                 Texture2D previousTexture = null;
 
@@ -157,9 +157,9 @@ namespace Breeze
                 {
                     
                     {
-                        if (screen.RenderTarget == null || screen.RenderTarget.Bounds != Solids.Bounds)
+                        if (screen.RenderTarget == null || screen.RenderTarget.Bounds != Solids.Instance.Bounds)
                         {
-                            screen.RenderTarget = new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Bounds.Width, Solids.Bounds.Height);
+                            screen.RenderTarget = new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Instance.Bounds.Width, Solids.Instance.Bounds.Height);
                         }
 
                         Solids.Instance.SpriteBatch.GraphicsDevice.SetRenderTarget(screen.RenderTarget);
@@ -177,7 +177,7 @@ namespace Breeze
                 {
                     using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch, SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, null))
                     {
-                        Solids.Instance.SpriteBatch.Draw(previousTexture, Solids.Bounds, null, Color.White);
+                        Solids.Instance.SpriteBatch.Draw(previousTexture, Solids.Instance.Bounds, null, Color.White);
                     }
                 }
 
