@@ -171,7 +171,30 @@ namespace Breeze
                     SpriteBatch.End();
                 }
 
-            if (showDebug)
+            if (showDebug && true)
+            {
+                
+                SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
+                Vector2 fontscale = new Vector2(0.4f, 0.4f);
+                int ps = 50 + (BreezeDebug.ConsoleHistory.Count * 30);
+
+                ps = 700 - (BreezeDebug.ConsoleHistory.Count * 30);
+
+                foreach (string history in BreezeDebug.ConsoleHistory)
+                {
+                    if (ps > 0)
+                    {
+                        Fonts.Consolas.GetFont(50).DrawText(SpriteBatch, new Vector2(10, ps), history, Color.White, new Vector2(0.5f, 0.5f));
+                        
+                    }
+
+                    ps = ps + 30;
+                }
+
+                SpriteBatch.End();
+            }
+
+            if (showDebug && false)
             {
                 float step = Solids.Instance.Bounds.Width / (float)BenchMarkProvider.Steps;
                 float htStep = 100 / (float)Solids.Instance.Bounds.Height;
