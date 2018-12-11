@@ -26,13 +26,9 @@ namespace Breeze
                 return (Texture2D)library[key];
             }
 
-            string fn = filename;
-            if (fn.ToLower().StartsWith("images"))
-            {
-                string xfn = Solids.Instance.ContentPath.GetFile(fn);
-            }
+            Texture2D tmp = spriteBatch.GraphicsDevice.LoadTexture(filename);
+            
 
-            Texture2D tmp = spriteBatch.GraphicsDevice.LoadTexture(fn);
             if (cache)
             {
                 library.Add(key, tmp);

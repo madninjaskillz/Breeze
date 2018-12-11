@@ -62,7 +62,9 @@ namespace Breeze.AssetTypes
                 (Rectangle position, Rectangle? source) thing = TextureHelpers.GetAdjustedDestAndSourceAfterClip(pos, fixedSource, translatedClip);
                 using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch))
                 {
-                    spriteBatch.Draw(Texture2D.Value, thing.Item1, thing.Item2, ImageColor.Value * opacity, Rotation.Value, new Vector2(thing.Item1.Width/2f, thing.Item1.Height/2f),SpriteEffects.None,1f);
+                    //spriteBatch.Draw(Texture2D.Value, thing.Item1, thing.Item2, ImageColor.Value * opacity, Rotation.Value, new Vector2(thing.Item1.Width/2f, thing.Item1.Height/2f),SpriteEffects.None,1f);
+
+                    spriteBatch.Draw(Texture2D.Value, pos.Value.ToRectangle, null, ImageColor.Value * opacity);
                 }
 
             }

@@ -183,7 +183,7 @@ namespace Breeze.Helpers
                 }
                 else
                 {
-                    return new FloatRectangle(Solids.Bounds);
+                    return new FloatRectangle(Solids.Instance.Bounds);
                 }
             }
 
@@ -200,7 +200,7 @@ namespace Breeze.Helpers
         {
             if (rect == null)
             {
-                return Clamp(new FloatRectangle(Solids.Bounds), new FloatRectangle(clamp), leftClampOnly);
+                return Clamp(new FloatRectangle(Solids.Instance.Bounds), new FloatRectangle(clamp), leftClampOnly);
             }
 
             return Clamp(rect.Value, new FloatRectangle(clamp), leftClampOnly);

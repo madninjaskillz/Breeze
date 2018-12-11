@@ -79,11 +79,11 @@ namespace Breeze.Storage.Helpers
             return result;
         }
 
-        public static string GetFile(this string path, string file)
+        public static string GetFilePath(this string path, string file)
         {
-            return GetFolder(path, file);
+            return GetFolderPath(path, file);
         }
-        public static string GetFolder(this string path, string folder)
+        public static string GetFolderPath(this string path, string folder)
         {
             string result = path;
             if (!path.EndsWith("\\") && !folder.StartsWith("\\"))
@@ -123,7 +123,7 @@ namespace Breeze.Storage.Helpers
 
             if (tmp == null)
             {
-                part = Solids.Instance.ContentPathRelative.GetFile(path);
+                part = Solids.Instance.ContentPathRelative.GetFilePath(path);
                 tmp = Windows.ApplicationModel.Package.Current.InstalledLocation;
             }
 
@@ -227,7 +227,7 @@ namespace Breeze.Storage.Helpers
 
         public static void CreateFolder(this string path, string name)
         {
-            Directory.CreateDirectory(path.GetFile(name));
+            Directory.CreateDirectory(path.GetFilePath(name));
         }
     }
 }

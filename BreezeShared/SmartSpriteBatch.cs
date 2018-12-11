@@ -715,7 +715,7 @@ namespace Breeze
         public void Dispose()
         {
             this.smartSpriteBatch.End();
-            this.smartSpriteBatch.GraphicsDevice.ScissorRectangle = Solids.Bounds;
+            this.smartSpriteBatch.GraphicsDevice.ScissorRectangle = Solids.Instance.Bounds;
         }
     }
 

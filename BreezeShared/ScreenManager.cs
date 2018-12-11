@@ -132,12 +132,12 @@ namespace Breeze
 
             try
             {
-                Solids.Bounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
+                Solids.Instance.Bounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
 
                 Texture2D previousTexture = null;
 
 
-                var smartList = Solids.Instance.ScreenManager.SmartList().ToList();
+                var smartList = SmartList().ToList();
 
                 if (smartList.Any(t => t.IsBackgroundBlocking))
                 {
@@ -157,9 +157,9 @@ namespace Breeze
                 {
                     
                     {
-                        if (screen.RenderTarget == null || screen.RenderTarget.Bounds != Solids.Bounds)
+                        if (screen.RenderTarget == null || screen.RenderTarget.Bounds != Solids.Instance.Bounds)
                         {
-                            screen.RenderTarget = new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Bounds.Width, Solids.Bounds.Height);
+                            screen.RenderTarget = new RenderTarget2D(Solids.Instance.SpriteBatch.GraphicsDevice, Solids.Instance.Bounds.Width, Solids.Instance.Bounds.Height);
                         }
 
                         Solids.Instance.SpriteBatch.GraphicsDevice.SetRenderTarget(screen.RenderTarget);
@@ -177,7 +177,7 @@ namespace Breeze
                 {
                     using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch, SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, null))
                     {
-                        Solids.Instance.SpriteBatch.Draw(previousTexture, Solids.Bounds, null, Color.White);
+                        Solids.Instance.SpriteBatch.Draw(previousTexture, Solids.Instance.Bounds, null, Color.White);
                     }
                 }
 
@@ -208,14 +208,14 @@ namespace Breeze
                 //Solids.Instance.SpriteBatch.Draw(txt, new Rectangle(Solids.Bounds.X - width, Solids.Bounds.Y-height,width,height),null, Color.White);
                 //Solids.Instance.SpriteBatch.ForceEnd();
 
-                if (spriteBatch.GraphicsDevice.Viewport.Bounds != previousScreenBounds || Solids.Instance.ScreenManager.ToList().Any(t => t is BaseScreen && !((BaseScreen)t).BoundsSet))
+           //     if (spriteBatch.GraphicsDevice.Viewport.Bounds != previousScreenBounds || Solids.Instance.ScreenManager.ToList().Any(t => t is BaseScreen && !((BaseScreen)t).BoundsSet))
                 {
-                    foreach (BaseScreen screen in Solids.Instance.ScreenManager.SmartList().Where(t => t is BaseScreen && ((BaseScreen)t).IsFullScreen))
+                    foreach (BaseScreen screen in SmartList().Where(t => t is BaseScreen && ((BaseScreen)t).IsFullScreen))
                     {
                         screen.SetBounds(spriteBatch.GraphicsDevice.Viewport.Bounds);
                     }
 
-                    previousScreenBounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
+                  //  previousScreenBounds = spriteBatch.GraphicsDevice.Viewport.Bounds;
                 }
 
                 //if (Solids.Instance.InputService != null)
@@ -278,7 +278,7 @@ namespace Breeze
             //    }
             //}
 
-            public void AddView<T>() where T : BaseScreen, new()
+            public T AddView<T>() where T : BaseScreen, new()
             {
                 if (screenManager.screens.All(t => (t as T) == null))
                 {
@@ -286,10 +286,13 @@ namespace Breeze
                     ((T)screen).Initialise();
                     screenManager.Add(screen);
                     screenManager.BringToFront(screen);
-                }
 
-                //screenManager.RemoveAll<BackgroundScreen>();
-                //screenManager.RemoveAll<FilterScreen>();
+                    return screen;
+                }
+                else
+                {
+                    return (T)screenManager.screens.First(t => (t as T) != null);
+                }
             }
 
             public void AddView(BaseScreen screen)

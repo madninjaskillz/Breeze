@@ -370,7 +370,7 @@ namespace Breeze.FontSystem
             //      
 #if WINDOWS_UWP
             StorageFolder folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            string fullpath = Solids.Instance.ContentPath.GetFile(filename);
+            string fullpath = Solids.Instance.ContentPath.GetFilePath(filename);
             using (Stream fs = folder.OpenStreamForReadAsync(Solids.Instance.ContentPathRelative + filename).Result)
             {
                 using (TextReader textReader = new StreamReader(fs))

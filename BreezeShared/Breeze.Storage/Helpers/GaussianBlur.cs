@@ -96,7 +96,7 @@ namespace Breeze.Helpers
                 {
                     //Solids.Instance.SpriteBatch.ForceBegin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, Effect, null);
 
-                    Solids.Instance.SpriteBatch.Draw(sprite, Solids.Bounds, null, Color.White * bGdim);
+                    Solids.Instance.SpriteBatch.Draw(sprite, Solids.Instance.Bounds, null, Color.White * bGdim);
                 }
             }
         }
@@ -134,6 +134,54 @@ namespace Breeze.Helpers
                 }
             }
         }
+
+        public void DoBlur(int blurAmount, Rectangle? scissorRect, FloatRectangle? clip, int noisePerc, Rectangle sprite, Action renderCode)
+        {
+            if (Effect == null) return;
+
+            if (Solids.Settings.EnableBlur)
+            {
+                ////      Solids.Instance.SpriteBatch.DoEnd();
+                //Solids.Instance.SpriteBatch.Scissor = scissorRect;
+                ////      Solids.Instance.SpriteBatch.DoEnd();
+
+                Effect.CurrentTechnique = Effect.Techniques["AcrylicBlur"];
+                Effect.Parameters["gfxWidth"].SetValue((float)sprite.Width);
+                Effect.Parameters["gfxHeight"].SetValue((float)sprite.Height);
+                Effect.Parameters["blurSize"].SetValue((int)(blurAmount));
+                if (noisePerc > 0)
+                {
+                    Effect.Parameters["noisePerc"].SetValue(noisePerc);
+                }
+
+                //Solids.Instance.SpriteBatch.GraphicsDevice.Clear(Color.TransparentBlack);
+                Solids.Instance.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Solids.Instance.SpriteBatch.RasterizerState, Effect, null);
+                renderCode();
+                Solids.Instance.SpriteBatch.End();
+            }
+        }
+
+        public Effect StartBlur(int blurAmount, Rectangle? scissorRect, FloatRectangle? clip, int noisePerc, Rectangle sprite)
+        {
+            
+
+            if (Solids.Settings.EnableBlur)
+            {
+                Effect.CurrentTechnique = Effect.Techniques["AcrylicBlur"];
+                Effect.Parameters["gfxWidth"].SetValue((float)sprite.Width);
+                Effect.Parameters["gfxHeight"].SetValue((float)sprite.Height);
+                Effect.Parameters["blurSize"].SetValue((int)(blurAmount));
+                if (noisePerc > 0)
+                {
+                    Effect.Parameters["noisePerc"].SetValue(noisePerc);
+                }
+            }
+
+            return Effect;
+        }
+
+
+
 
 
         public Texture2D PerformGaussianBlur(Texture2D srcTexture, SmartSpriteBatch spriteBatch)

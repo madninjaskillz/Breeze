@@ -77,7 +77,7 @@ namespace Breeze
                 int ct = 0;
                 float mx = 1;
 
-                if (showDebug)
+                if (showDebug && false)
                 {
                     Vector2 fontscale = new Vector2(0.4f, 0.4f);
                     int ps = 50;
@@ -100,51 +100,77 @@ namespace Breeze
                     }
                 }
 
-                foreach (var i in DebugObjects)
+                if (showDebug && true)
                 {
-                    if (showDebug)
+                    Vector2 fontscale = new Vector2(0.4f, 0.4f);
+                    int ps = 50 + (BreezeDebug.ConsoleHistory.Count*30);
+
+                    if (ps > 700)
                     {
-
-
-                        font.DrawText(spriteBatch, new Vector2(spriteBatch.GraphicsDevice.Viewport.Bounds.Width - width - 10, mxh * ct), i.CurrentText, Color.White, scale);
-                        if (Solids.Instance.FrameCounter.CurrentFramesPerSecond > 59)
-                        {
-                            if (pointer % 500 == 0)
-                            {
-                                mx = Math.Max(i.HistoricValues.Max(), 1);
-
-                                if (mx > i.MXValue)
-                                {
-                                    i.MXValue = mx;
-                                }
-                                else
-                                {
-                                    i.MXValue = i.MXValue * 0.995f;
-                                }
-
-                            }
-
-                            mx = i.MXValue;
-
-                            int xct = 0;
-                            for (int x = pointer; x < pointer + 49; x++)
-                            {
-                                float h1 = (i.HistoricValues[x % 50] / mx) * mxh;
-                                float h2 = (i.HistoricValues[(x + 1) % 50] / mx) * mxh;
-
-                                int ps = spriteBatch.GraphicsDevice.Viewport.Bounds.Width - 90 + (xct * 2);
-
-                                spriteBatch.DrawLine(new Vector2(ps, h1 + (ct * mxh)), new Vector2(ps + 2, h2 + (ct * mxh)), Color.White);
-
-                                xct++;
-                            }
-                        }
-
-                        ct++;
+                        ps = 700;
                     }
-                    i.HistoricValues[pointer % 50] = i.CurrentValue;
+                    
+                    foreach (string history in BreezeDebug.ConsoleHistory)
+                    {
+                        if (ps > 0)
+                        {
+                            font.DrawText(spriteBatch, new Vector2(10, ps), history, Color.White, new Vector2(0.5f, 0.5f));
+                            ps = ps - 30;
+                        }
+                    }
                 }
 
+                if (false)
+                {
+                    foreach (var i in DebugObjects)
+                    {
+                        if (showDebug)
+                        {
+
+
+                            font.DrawText(spriteBatch,
+                                new Vector2(spriteBatch.GraphicsDevice.Viewport.Bounds.Width - width - 10, mxh * ct),
+                                i.CurrentText, Color.White, scale);
+                            if (Solids.Instance.FrameCounter.CurrentFramesPerSecond > 59)
+                            {
+                                if (pointer % 500 == 0)
+                                {
+                                    mx = Math.Max(i.HistoricValues.Max(), 1);
+
+                                    if (mx > i.MXValue)
+                                    {
+                                        i.MXValue = mx;
+                                    }
+                                    else
+                                    {
+                                        i.MXValue = i.MXValue * 0.995f;
+                                    }
+
+                                }
+
+                                mx = i.MXValue;
+
+                                int xct = 0;
+                                for (int x = pointer; x < pointer + 49; x++)
+                                {
+                                    float h1 = (i.HistoricValues[x % 50] / mx) * mxh;
+                                    float h2 = (i.HistoricValues[(x + 1) % 50] / mx) * mxh;
+
+                                    int ps = spriteBatch.GraphicsDevice.Viewport.Bounds.Width - 90 + (xct * 2);
+
+                                    spriteBatch.DrawLine(new Vector2(ps, h1 + (ct * mxh)),
+                                        new Vector2(ps + 2, h2 + (ct * mxh)), Color.White);
+
+                                    xct++;
+                                }
+                            }
+
+                            ct++;
+                        }
+
+                        i.HistoricValues[pointer % 50] = i.CurrentValue;
+                    }
+                }
 
                 pointer++;
             }

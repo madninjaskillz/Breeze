@@ -12,6 +12,8 @@ Breeze is a collection of helper services designed to make working with monogame
 * Breeze.SpriteBatch - A wrapped SpriteBatch with many helper methods to make some basic tasks basic.
 * Breeze.Input - Event driven Input service supporting KB+Mouse/TouchScreen and gamepad with ability to remap controls, ignore inputs when screen is not focused and supporting advanced combinations such as modifier keys and mouse buttons, button holds and double clicks.
 
+![Example of Breeze UI](https://github.com/madninjaskillz/Breeze/raw/master/UIExample.png)
+
 #### Background
 Breeze started life as a framework for my own personal project but as it grew more competent I realised it needed to be separated out into its own project. Early versions of this may make this very apparent with references to the previous project and maybe the odd hardcoded value.
 
@@ -19,6 +21,11 @@ As such documentation is currently behind the curve and the following is a very 
 
 #### Using Breeze
 Currently breeze is not modular as the main part, the main UI element requires most of the other parts to function properly.
+
+First job is to add the Breeze.Shared and the Breeze.PLATFORM projects (currently only UWP is commited).
+
+Reference these in your project and then add the BasicBlur.fx to your main projects Content project
+
 Once you have added breeze to your project, you will need to modify you main Game.CS:
 
 Firstly, you need an instance variable to use Breeze of type BreezeInstance. For this example we will assume (for simplicity sakes we have a public static in Game.CS)
@@ -146,6 +153,9 @@ There are then a number of helper classes, until documentation improves, I sugge
     {
     	logInData = Solids.Breeze.Storage.UserStorage.ReadJson<List<LogInData>>("Logins.json");
     }
+
+Also included is PakBuilder project- used to construct pak files for Breeze.Storage.DatfileStorage - this can be used to construct a pak file as part of the build process (which is how I currently use it) meaning you are just deploying two files (a .pak and a .toc) and you are not forced to use Content Pipeline.
+
 
 ### Using Breeze.Benchmark
 
