@@ -81,6 +81,11 @@ namespace Breeze.Screens
                     DataboundAsset asset = (DataboundAsset)Activator.CreateInstance(type);
                     asset.LoadFromXml(childNode.Attributes);
 
+                    if (asset is DataboundAssetWhereChildIsContentAsset masterAsset && !string.IsNullOrEmpty(childNode.InnerText))
+                    {
+                        masterAsset.LoadContent(childNode.InnerText);
+                    }
+
                     if (asset is DataboundContainterAsset containterAsset)
                     {
                         containterAsset.Children.Value.AddRange(HandleChildren(childNode));

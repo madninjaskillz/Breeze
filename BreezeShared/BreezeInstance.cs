@@ -49,8 +49,8 @@ namespace Breeze
 #if WINDOWS_UAP
             StorageFolder folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
 
-            ContentPath = folder.Path + "\\Content\\";
-            ContentPathRelative = "Content\\";
+            ContentPath = folder.Path + "\\";
+            ContentPathRelative = "\\";
 #elif ANDROID
 
             Solids.ContentPath = "Content\\";
@@ -66,7 +66,9 @@ namespace Breeze
 
             if (Storage.FileSystemStorage.FileExists(ContentPath.GetFilePath("Content.pak")))
             {
-                StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(ContentPathRelative.GetFilePath("Content.pak")).GetAwaiter().GetResult();
+                string cpath = ContentPathRelative.GetFilePath("Content.pak");
+                Debug.WriteLine("content pak path: "+cpath);
+                StorageFile packBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(cpath).GetAwaiter().GetResult();
 
                 Stream stream = packBuffer.OpenStreamForReadAsync().Result;
                 int streamLength = (int)stream.Length;
@@ -75,6 +77,7 @@ namespace Breeze
 
                 string tocPath = ContentPathRelative.GetFilePath("Content.toc");
 
+                Debug.WriteLine("Toc path: "+tocPath);
                 var tocBuffer = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(tocPath).GetAwaiter().GetResult();
 
                 string json = FileIO.ReadTextAsync(tocBuffer).GetAwaiter().GetResult();

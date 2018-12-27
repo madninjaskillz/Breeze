@@ -1,0 +1,41 @@
+﻿<screen>
+  <Resources>
+    <Template Name="StandardButtonTemplate">
+      <ButtonAsset Position="0,0,0.75,0.08">
+        <RectangleAsset Position="0,0,0.75,0.08" Blur="8" BackgroundColor="Color.Black*0.9">
+          <ContentAsset>
+          </ContentAsset>
+        </RectangleAsset>
+
+        <RectangleAsset Position="0,0,0.75,0.08" Blur="8" BackgroundColor="Color.Green*0.6">
+          <ContentAsset>
+          </ContentAsset>
+        </RectangleAsset>
+      </ButtonAsset>
+    </Template>
+  </Resources>
+  <BoxShadowAsset Color="Color.White" Position="0.15,0.15,0.75,0.75">
+    <RectangleAsset BorderColor="0xFF99DBFF" BrushSize="0" Position="0,0, 0.75, 0.75" BackgroundColor="Color.White" Blur="18">
+      <StackAsset Position="0,0,0.75,0.75">
+        <RectangleAsset BorderColor="Color.White" BrushSize="0" Position="0,0, 0.75, 0.05" BackgroundColor="Color.Purple * 0.65" Blur="8">
+          <FontAsset Text="Example Dialog Window" FontColor="Color.White" Position="0,0,0.75,0.05" FontFamily="EuroStile" Margin="0,0,0,0.25" FontSize="48"/>
+        </RectangleAsset>
+
+        <FontAsset FontColor="Color.Black" FontSize="24" Position="0,0,0.75,0" FontFamily="SegoeLight" Margin="0.025,0.025,0.025,0.025" MultiLine="true" WordWrap="true" AntiAlias="false">
+          This is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test.
+        </FontAsset>
+
+        <FontAsset FontColor="Color.Black" FontSize="24" Position="0,0,0.75,0" FontFamily="SegoeLight" Margin="0.025,0.025,0.025,0.025" MultiLine="true" WordWrap="true" AntiAlias="false">
+          BY DOWNLOADING OR USING THIS SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS LICENSE AGREEMENT, THAT YOU UNDERSTAND IT, AND THAT YOU AGREE TO BE BOUND BY ITS TERMS. IF YOU DO NOT AGREE TO THE TERMS AND CONDITIONS OF THIS LICENSE AGREEMENT, PROMPTLY EXIT THIS PAGE WITHOUT DOWNLOADING THE SOFTWARE.
+
+          1.Grant of License (WHAT YOU MAY DO):
+          Midiman, Inc. and M-Audio ("Licensor") hereby grants to you a non-exclusive license to use the program and/or program update with which this license is distributed (the "Software"), including any documentation files accompanying the Software (the "Documentation") on a single server (if the Software is server based) or personal Computer or Mac (if the Software is PC or Mac based) to support one user, and to make one (1) backup copy of the Software, provided that (i) the Software is installed on only one (1) server or PC or Mac, as the case may be; (ii) the Software is NOT modified; (iii) all copyright notices are maintained on the Software; and (iv) you agree to be bound by the terms of this license agreement. You may transfer the Software to other computers you own so long as you only use the Software on one computer at a time. The Software and Documentation shall be used only by you and your employees, and only for your own personal use or your internal business use, and shall not be used in the operation of a service bureau or for the benefit of any other person or entity without the prior written permission of Midiman, Inc. or M-Audio.
+        </FontAsset>
+
+        <FontAsset FontColor="Color.Black" FontSize="24" Position="0,0,0.75,0" FontFamily="SegoeLight" Margin="0.025,0.025,0.025,0.025" MultiLine="true" WordWrap="true" AntiAlias="false">
+          This is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test.
+        </FontAsset>
+        </StackAsset>
+    </RectangleAsset>
+  </BoxShadowAsset>
+</screen>

@@ -55,6 +55,14 @@ namespace Breeze.AssetTypes.DataBoundTypes
         public MGUIViewModel.BindType Direction { get; set; }
     }
 
+    public class DataboundAssetWhereChildIsContentAsset : DataboundAsset
+    {
+        public virtual void LoadContent(string child)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public partial class DataboundAsset
     {
         public DataboundValue<bool> IsHidden { get; set; } = new DataboundValue<bool>();

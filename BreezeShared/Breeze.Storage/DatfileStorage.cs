@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -99,6 +100,7 @@ namespace Breeze.Storage
 
         public byte[] ReadBytes(string path)
         {
+            Debug.WriteLine("Read Bytes: " + path);
             if (path.StartsWith("\\")) path = path.Substring(1);
             FileEntry entry = TabletOfContents.First(t => t.FullPath.ToLower() == path.ToLower());
             byte[] result = new byte[entry.Length];
@@ -110,6 +112,7 @@ namespace Breeze.Storage
 
         public Stream GetStream(string path)
         {
+            Debug.WriteLine("Loading Stream: "+path);
             if (path.StartsWith("\\")) path = path.Substring(1);
             FileEntry entry = TabletOfContents.First(t => t.FullPath.ToLower() == path.ToLower());
             byte[] result = new byte[entry.Length];

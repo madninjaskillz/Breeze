@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Breeze;
+using BreezeDemo.Screens.Demo1;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace BreezeDemo
@@ -8,6 +10,7 @@ namespace BreezeDemo
     /// </summary>
     public class Game1 : Game
     {
+        public static BreezeInstance Breeze;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -39,7 +42,15 @@ namespace BreezeDemo
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            var thisspriteBatch = new SpriteBatch(graphics.GraphicsDevice);
+            Breeze = new BreezeInstance(Content, thisspriteBatch, this);
             // TODO: use this.Content to load your game content here
+
+            #if !ANDROID
+                Window.TextInput += Breeze.TextInputHandler;
+            #endif
+
+            Demo1Screen demo1Screen = Breeze.ScreenManager.Factory.AddViewAsync<Demo1Screen>().Result;
         }
 
         /// <summary>
@@ -58,6 +69,7 @@ namespace BreezeDemo
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            Breeze.Update(gameTime);
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -70,7 +82,7 @@ namespace BreezeDemo
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            Breeze.Draw(gameTime, false);
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);

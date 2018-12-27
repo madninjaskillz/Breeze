@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Breeze.AssetTypes;
 using Breeze.FontSystem;
 using Breeze.Helpers;
@@ -284,6 +285,23 @@ namespace Breeze
                 {
                     T screen = new T();
                     ((T)screen).Initialise();
+                    screenManager.Add(screen);
+                    screenManager.BringToFront(screen);
+
+                    return screen;
+                }
+                else
+                {
+                    return (T)screenManager.screens.First(t => (t as T) != null);
+                }
+            }
+
+            public async Task<T> AddViewAsync<T>() where T : BaseScreen, new()
+            {
+                if (screenManager.screens.All(t => (t as T) == null))
+                {
+                    T screen = new T();
+                    await ((T)screen).Initialise();
                     screenManager.Add(screen);
                     screenManager.BringToFront(screen);
 

@@ -19,7 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ContainerAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundButtonAsset.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataBoundFontAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\FontAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ImageAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\InteractiveAsset.cs" />

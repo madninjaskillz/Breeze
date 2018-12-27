@@ -16,7 +16,13 @@ namespace Breeze
     {
         public FloatRectangle bounds;
 
-        public Vector2 Translate(Vector2 input) => new Vector2(bounds.X+(bounds.Width*input.X), bounds.Y+(bounds.Height*input.Y));
+        public Vector2 Translate(Vector2 input) => new Vector2(bounds.X + (bounds.Width * input.X), bounds.Y + (bounds.Height * input.Y));
+
+        public float Untranslate(float input)
+        {
+            var result = input / bounds.Height;
+            return result;
+        }
 
         public FloatRectangle? Translate(FloatRectangle? input)
         {
@@ -51,7 +57,7 @@ namespace Breeze
             float y = v.Y - hh;
             y = y / hh;
 
-            var result = new Vector3(x,-y,0);
+            var result = new Vector3(x, -y, 0);
 
             return result;
         }
@@ -68,17 +74,17 @@ namespace Breeze
 
         public Vector2 AbstractedSize(Texture2D texture)
         {
-            return new Vector2(texture.Width/bounds.Width, texture.Height/bounds.Height);
+            return new Vector2(texture.Width / bounds.Width, texture.Height / bounds.Height);
         }
 
         public bool IsWithinBounds(FloatRectangle fr)
         {
-            return ((fr.BottomRight.X > bounds.X || fr.TopLeft.X < bounds.BottomRight.X )&&
+            return ((fr.BottomRight.X > bounds.X || fr.TopLeft.X < bounds.BottomRight.X) &&
                     (fr.BottomRight.Y > bounds.Y || fr.TopLeft.Y < bounds.BottomRight.Y));
         }
     }
 
-    public class Thickness 
+    public class Thickness
     {
         public readonly float Top;
         public readonly float Left;
@@ -92,7 +98,7 @@ namespace Breeze
             Right = 0;
             Bottom = 0;
         }
-        
+
         public Thickness(float uniform)
         {
             Top = uniform;
@@ -109,7 +115,7 @@ namespace Breeze
             Bottom = topAndBottom;
         }
 
-        public Thickness(float top,float right, float bottom,float left)
+        public Thickness(float top, float right, float bottom, float left)
         {
             Top = top;
             Left = left;
@@ -148,12 +154,12 @@ namespace Breeze
         public float Width;
         public float Height;
         public bool Boundless;
-        public Vector2 TopLeft => new Vector2(X,Y);
-        public Vector2 BottomRight =>new Vector2(X+Width,Y+Height);
+        public Vector2 TopLeft => new Vector2(X, Y);
+        public Vector2 BottomRight => new Vector2(X + Width, Y + Height);
 
         public float Right => X + Width;
         public float Bottom => Y + Height;
-        public Rectangle ToRectangle => new Rectangle((int)X,(int)Y,(int)Width,(int)Height);
+        public Rectangle ToRectangle => new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
         public Vector2 ToVector2 => new Vector2(X, Y);
         public FloatRectangle(float x, float y, float width, float height, bool boundless = false)
         {
@@ -188,7 +194,7 @@ namespace Breeze
         public FloatRectangle(string input)
         {
             if (input.StartsWith("\"")) input = input.Substring(1);
-            if (input.EndsWith("\"")) input = input.Substring(0,input.Length-1);
+            if (input.EndsWith("\"")) input = input.Substring(0, input.Length - 1);
 
             var parts = input.Split(',');
             float x = float.Parse(parts[0]);

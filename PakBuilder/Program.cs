@@ -16,16 +16,36 @@ namespace PakBuilder
         {
 
             rootpath = args[0];
+
+            if (!rootpath.EndsWith("\\"))
+            {
+                rootpath = rootpath + "\\";
+            }
+
+            Console.WriteLine("Running PakBuilder");
+            Console.WriteLine("RootPath: "+rootpath);
            // rootpath = "O:\\ezmuzepro\\Ezmuze.Shared\\Ezmuze.Content\\Content\\";
             List<string> fullPaths = new List<string>();
 
             fullPaths = GetFolder(rootpath);
-          
+
+            string[] excludeFolders =
+            {
+                "obj\\",
+                "bin\\"
+            };
+
+            string[] excludedExtensions =
+            {
+                ".mgcb",
+            };
+
             List<FileEntry> toc = new List<FileEntry>();
             using (MemoryStream ms = new MemoryStream())
             {
-                foreach (string fullPath in fullPaths)
+                foreach (string fullPath in fullPaths.Where(fp=>!excludeFolders.Any(fp.StartsWith) && !excludedExtensions.Any(fp.EndsWith)))
                 {
+                    Console.WriteLine("Adding: "+fullPath);
                     FileEntry entry = new FileEntry();
 
                     entry.FileName = fullPath.Split('\\').Last();
@@ -51,8 +71,19 @@ namespace PakBuilder
                     toc.Add(entry);
                 }
 
-                string tocFile = rootpath.Substring(0, rootpath.Length - 1) + ".toc";
-                string pakFile = rootpath.Substring(0, rootpath.Length - 1) + ".pak";
+                string rpath = rootpath;
+                if (rpath.StartsWith("\\"))
+                {
+                    rpath = rpath.Substring(1);
+                }
+
+
+
+                string tocFile = rpath.Substring(0, rpath.Length - 1) + ".toc";
+                string pakFile = rpath.Substring(0, rpath.Length - 1) + ".pak";
+
+                Console.WriteLine("TokFile: "+tocFile);
+                Console.WriteLine("PakFile: " + pakFile);
                 using (var st = new FileStream(tocFile, FileMode.Create))
                 {
                     string json = JsonConvert.SerializeObject(toc);
@@ -87,7 +118,6 @@ namespace PakBuilder
             result.AddRange(files.Select(x=>x.Replace(rootpath, "")));
             
             var dirs = Directory.GetDirectories(path);
-
             result.AddRange(dirs.SelectMany(GetFolder));
 
             return result;
