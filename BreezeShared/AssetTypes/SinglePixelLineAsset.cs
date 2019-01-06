@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Breeze.AssetTypes.DataBoundTypes;
 using Breeze.Helpers;
+using Breeze.Screens;
 using Breeze.Services.InputService;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,7 +28,7 @@ namespace Breeze.AssetTypes
             BrushSize = brushSize;
         }
 
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
 
             if (Solids.Instance.InputService.IsPressed(InputService.ShiftKeys.LeftShift1))
@@ -84,7 +85,7 @@ namespace Breeze.AssetTypes
             Lines = lines;
         }
 
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             spriteBatch.DrawLines(TranslateLines(Lines, screen, opacity, scrollOffset), screen.Translate(clip));
         }

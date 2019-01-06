@@ -4,6 +4,7 @@ using System.Linq;
 using Breeze.Services.InputService;
 using Breeze.Helpers;
 using Breeze.AssetTypes.DataBoundTypes;
+using Breeze.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,7 +33,7 @@ namespace Breeze.AssetTypes
             Points.SetChangeAction(OnPointsChange);
         }
 
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             spriteBatch.DrawLine(approxPoints.Select(screen.Translate).ToArray(), Color.Value, null, BrushSize.Value);
         }

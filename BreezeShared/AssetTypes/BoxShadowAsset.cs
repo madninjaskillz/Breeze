@@ -30,16 +30,16 @@ namespace Breeze.AssetTypes
             Position = rectangleAsset.Position;
         }
 
-        public override void LoadFromXml(XmlAttributeCollection childNodeAttributes)
-        {
-            if (childNodeAttributes.GetNamedItem("Position")?.Value != null) Position = UIElement.GetDBValue<FloatRectangle>(childNodeAttributes.GetNamedItem("Position")?.Value);
-            if (childNodeAttributes.GetNamedItem("BackgroundColor")?.Value != null) BackgroundColor = UIElement.GetDBValue<Color?>(childNodeAttributes.GetNamedItem("BackgroundColor")?.Value);
-            if (childNodeAttributes.GetNamedItem("Color")?.Value != null) Color = UIElement.GetDBValue<Color>(childNodeAttributes.GetNamedItem("Color")?.Value);
+        //public override void LoadFromXml(XmlAttributeCollection childNodeAttributes)
+        //{
+        //    if (childNodeAttributes.GetNamedItem("Position")?.Value != null) Position = UIElement.GetDBValue<FloatRectangle>(childNodeAttributes.GetNamedItem("Position")?.Value);
+        //    if (childNodeAttributes.GetNamedItem("BackgroundColor")?.Value != null) BackgroundColor = UIElement.GetDBValue<Color?>(childNodeAttributes.GetNamedItem("BackgroundColor")?.Value);
+        //    if (childNodeAttributes.GetNamedItem("Color")?.Value != null) Color = UIElement.GetDBValue<Color>(childNodeAttributes.GetNamedItem("Color")?.Value);
 
-            if (childNodeAttributes.GetNamedItem("TileMode")?.Value != null) TileMode = UIElement.GetDBValue<TileMode>(childNodeAttributes.GetNamedItem("TileMode")?.Value);
-            if (childNodeAttributes.GetNamedItem("BorderSizePercentage")?.Value != null) BorderSizePercentage = UIElement.GetDBValue<float>(childNodeAttributes.GetNamedItem("BorderSizePercentage")?.Value);
-            if (childNodeAttributes.GetNamedItem("Scale")?.Value != null) Scale = UIElement.GetDBValue<float>(childNodeAttributes.GetNamedItem("Scale")?.Value);
-        }
+        //    if (childNodeAttributes.GetNamedItem("TileMode")?.Value != null) TileMode = UIElement.GetDBValue<TileMode>(childNodeAttributes.GetNamedItem("TileMode")?.Value);
+        //    if (childNodeAttributes.GetNamedItem("BorderSizePercentage")?.Value != null) BorderSizePercentage = UIElement.GetDBValue<float>(childNodeAttributes.GetNamedItem("BorderSizePercentage")?.Value);
+        //    if (childNodeAttributes.GetNamedItem("Scale")?.Value != null) Scale = UIElement.GetDBValue<float>(childNodeAttributes.GetNamedItem("Scale")?.Value);
+        //}
 
         //public DataboundValue<FloatRectangle> Position { get; set; } = new DataboundValue<FloatRectangle>();
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -59,7 +59,7 @@ namespace Breeze.AssetTypes
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public DataboundValue<float> Scale { get; set; } = new DataboundValue<float>(1f);
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch))
             {

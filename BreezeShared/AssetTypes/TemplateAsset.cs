@@ -7,6 +7,7 @@ using Breeze.AssetTypes;
 using Breeze.AssetTypes.DataBoundTypes;
 using Breeze.AssetTypes.XMLClass;
 using Breeze.Helpers;
+using Breeze.Screens;
 using Force.DeepCloner;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,52 +22,56 @@ namespace Breeze.Shared.AssetTypes
         {
         }
 
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
-            string template = Template.Value;
+            if (!haveLoadedTemplate)
+            {
+                string template = Template.Value();
+
+                List<DataboundAsset> children = this.Children.Value;
+
+                DataboundAsset templateContent = screenResources.GetTemplate(template);
+                templateContent.ParentAsset = this;
+
+                if (templateContent is DataboundContainterAsset containerAsset)
+                {
+                    //containerAsset.Children.Value = children;
+
+                    List<DataboundAsset> contentAssets = containerAsset.FindChildrenOfType<ContentAsset>();
+                    if (contentAssets.Count>0)
+                    {
+                        foreach (var contentAsset in contentAssets)
+                        {
+                            ((DataboundContainterAsset)contentAsset.ParentAsset).Children.Value = children;
+                        }
+                    }
+                }
+                
+                this.Children.Value = new List<DataboundAsset>{templateContent};
+                this.FixParentChildRelationship();
+
+                this.FixBinds();
+                haveLoadedTemplate = true;
+            }
+
             SetChildrenOriginToMyOrigin();
+            if (ActualSize == Vector2.Zero)
+            {
+                this.ActualSize = this.Children.Value.First().ActualSize;
+
+            }
         }
 
-        public override void LoadFromXml(XmlAttributeCollection childNodeAttributes)
-        {
-            if (childNodeAttributes.GetNamedItem("Position")?.Value != null) Position = UIElement.GetDBValue<FloatRectangle>(childNodeAttributes.GetNamedItem("Position")?.Value);
-            if (childNodeAttributes.GetNamedItem("Template")?.Value != null) Template = UIElement.GetDBValue<string>(childNodeAttributes.GetNamedItem("Template")?.Value);
-        }
+        private bool haveLoadedTemplate;
 
-        public void ProcessContents()
-        {
-            //todo fix me
-
-            //List<DataboundAsset> childs = this.Children.Value.DeepClone();
-            //    foreach (DataboundAsset databoundAsset in childs)
-            //    {
-            //        databoundAsset.ParentPosition = this.ActualPosition;
-            //    }
-            //    List<ContentAsset> content = UIHelpers.FindChildrenOfType<ContentAsset>(templateContainterAsset);
-
-
-
-            //    foreach (var cont in content)
-            //    {
-            //        cont.Children.Value = childs;
-            //        cont.ParentPosition = templateAsset.ActualPosition;
-            //    }
-
-              //  templateContainterAsset.Children = new DataboundAsset.DataboundValue<List<DataboundAsset>>();
-        }
     }
 
     public class ContentAsset : DataboundContainterAsset
     {
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
-           // SetChildrenOriginToMyOrigin();
-        }
-
-        public override void LoadFromXml(XmlAttributeCollection childNodeAttributes)
-        {
-            //if (childNodeAttributes.GetNamedItem("Position")?.Value != null) Position = UIElement.GetDBValue<FloatRectangle>(childNodeAttributes.GetNamedItem("Position")?.Value);
-            //if (childNodeAttributes.GetNamedItem("Template")?.Value != null) Template = UIElement.GetDBValue<string>(childNodeAttributes.GetNamedItem("Template")?.Value);
+            SetChildrenOriginToMyOrigin();
+            this.ActualSize = this.Children.Value.First().ActualSize;
         }
     }
 }

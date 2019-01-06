@@ -1,15 +1,37 @@
 ﻿<screen>
   <Resources>
     <Template Name="StandardButtonTemplate">
-      <ButtonAsset Position="0,0,0.75,0.08">
-        <RectangleAsset Position="0,0,0.75,0.08" Blur="8" BackgroundColor="Color.Black*0.9">
-          <ContentAsset>
-          </ContentAsset>
+      <ButtonAsset Position="0,0,0.75,0.1" Margin="0.001,0,0.001,0" OnClickEvent="TestButtonClick">
+        <RectangleAsset Position="0,0,0.75,0.098" Blur="8" BackgroundColor="Color.Black*0.9" BorderColor="Color.Black">
+          <ContentAsset/>
+        </RectangleAsset>
+        <RectangleAsset Position="0,0,0.75,0.098" Blur="8" BackgroundColor="Color.Green">
+          <ContentAsset/>
+        </RectangleAsset>
+      </ButtonAsset>
+    </Template>
+
+    <Template Name="SimpleButtonTemplate">
+      <ButtonAsset Position="0,0,0.75,0.1" Margin="0.001,0,0.001,0">
+        <RectangleAsset Position="0,0,0.75,0.098" Blur="8" BackgroundColor="Color.Black*0.9" BorderColor="Color.Black">
+          <ContentAsset/>
+        </RectangleAsset>
+        <RectangleAsset Position="0,0,0.75,0.098" Blur="8" BackgroundColor="Color.Green">
+          <ContentAsset/>
+        </RectangleAsset>
+      </ButtonAsset>
+    </Template>
+
+    <Template Name="IconAndTextButtonTemplate">
+      <ButtonAsset Position="0,0,0.75,0.1" Margin="0.001,0,0.001,0" XName="IconAndTextButtonTemplateButton">
+        <RectangleAsset Position="0,0,0.75,0.098" Blur="8" BackgroundColor="Color.Black*0.9" BorderColor="Color.Black" XName="IconAndTextButtonRectangle">
+          <FontAsset Symbol="BoundTo=Symbol,BindingDirection=TwoWay" FontColor="Color.White" Position="0.015, 0.01, 0.08, 0.08" FontFamily="MDL2" FontMargin="0.005" FontSize="72" XName="IconAndTextButtonIcon"/>
+          <FontAsset Text="BoundTo=Text,BindingDirection=TwoWay" FontColor="Color.White" Position="0.08, 0, 0.67, 0.08" FontFamily="SegoeLight" FontMargin="0.005" FontSize="72" XName="IconAndTextButtonText"/>
         </RectangleAsset>
 
-        <RectangleAsset Position="0,0,0.75,0.08" Blur="8" BackgroundColor="Color.Green*0.6">
-          <ContentAsset>
-          </ContentAsset>
+        <RectangleAsset Position="0,0,0.75,0.098" Blur="8" BackgroundColor="Color.Green" BorderColor="Color.Black" XName="IconAndTextButtonRectangle">
+          <FontAsset Symbol="BoundTo=Symbol,BindingDirection=TwoWay" FontColor="Color.White" Position="0.015, 0.01, 0.08, 0.08" FontFamily="MDL2" FontMargin="0.005" FontSize="72" XName="IconAndTextButtonIcon"/>
+          <FontAsset Text="BoundTo=Text,BindingDirection=TwoWay" FontColor="Color.White" Position="0.08, 0, 0.67, 0.08" FontFamily="SegoeLight" FontMargin="0.005" FontSize="72" XName="IconAndTextButtonText"/>
         </RectangleAsset>
       </ButtonAsset>
     </Template>
@@ -17,25 +39,25 @@
   <BoxShadowAsset Color="Color.White" Position="0.15,0.15,0.75,0.75">
     <RectangleAsset BorderColor="0xFF99DBFF" BrushSize="0" Position="0,0, 0.75, 0.75" BackgroundColor="Color.White" Blur="18">
       <StackAsset Position="0,0,0.75,0.75">
-        <RectangleAsset BorderColor="Color.White" BrushSize="0" Position="0,0, 0.75, 0.05" BackgroundColor="Color.Purple * 0.65" Blur="8">
-          <FontAsset Text="Example Dialog Window" FontColor="Color.White" Position="0,0,0.75,0.05" FontFamily="EuroStile" Margin="0,0,0,0.25" FontSize="48"/>
+        <RectangleAsset BorderColor="Color.White" BrushSize="0" Position="0,0, 0.75, 0.05" BackgroundColor="Color.Purple * 0.65" Blur="8" XName="TitleBarRectangle">
+          <FontAsset Text="Example Dialog Window" FontColor="Color.White" Position="0,0,0.75,0.05" FontFamily="EuroStile" Margin="0.0025,0.025,0.0025,0.025" FontSize="40" XName="TitleBarText"/>
         </RectangleAsset>
 
-        <FontAsset FontColor="Color.Black" FontSize="24" Position="0,0,0.75,0" FontFamily="SegoeLight" Margin="0.025,0.025,0.025,0.025" MultiLine="true" WordWrap="true" AntiAlias="false">
+        
+        <FontAsset FontColor="Color.Black" FontSize="24" Position="0,0,0.75,0" FontFamily="SegoeLight" Margin="0.025,0.025,0.025,0.025" MultiLine="true" WordWrap="true" AntiAlias="false" XName="DemoTxt">
           This is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test.
         </FontAsset>
+      
+        <TemplateAsset Template="StandardButtonTemplate" Position="0, 0, 0.75, 0.1" XName="ExampleTemplate">
+          <FontAsset Symbol="ClosePane" FontColor="Color.White" Position="0, 0, 0.08, 0.08" FontFamily="MDL2" FontMargin="0.005" FontSize="72" XName="ExampleTemplateSymbol"/>
+          <FontAsset Text="BoundTo=TestText,BindingDirection=TwoWay" FontColor="Color.White" Position="0.08, 0, 0.67, 0.08" FontFamily="SegoeLight" FontMargin="0.005" FontSize="72" XName="ExampleTemplateText"/>
+        </TemplateAsset>
 
-        <FontAsset FontColor="Color.Black" FontSize="24" Position="0,0,0.75,0" FontFamily="SegoeLight" Margin="0.025,0.025,0.025,0.025" MultiLine="true" WordWrap="true" AntiAlias="false">
-          BY DOWNLOADING OR USING THIS SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS LICENSE AGREEMENT, THAT YOU UNDERSTAND IT, AND THAT YOU AGREE TO BE BOUND BY ITS TERMS. IF YOU DO NOT AGREE TO THE TERMS AND CONDITIONS OF THIS LICENSE AGREEMENT, PROMPTLY EXIT THIS PAGE WITHOUT DOWNLOADING THE SOFTWARE.
+        <TemplateAsset Template="IconAndTextButtonTemplate" x_Symbol="String|ClosePane2" x_Text="String|theTest"/>
 
-          1.Grant of License (WHAT YOU MAY DO):
-          Midiman, Inc. and M-Audio ("Licensor") hereby grants to you a non-exclusive license to use the program and/or program update with which this license is distributed (the "Software"), including any documentation files accompanying the Software (the "Documentation") on a single server (if the Software is server based) or personal Computer or Mac (if the Software is PC or Mac based) to support one user, and to make one (1) backup copy of the Software, provided that (i) the Software is installed on only one (1) server or PC or Mac, as the case may be; (ii) the Software is NOT modified; (iii) all copyright notices are maintained on the Software; and (iv) you agree to be bound by the terms of this license agreement. You may transfer the Software to other computers you own so long as you only use the Software on one computer at a time. The Software and Documentation shall be used only by you and your employees, and only for your own personal use or your internal business use, and shall not be used in the operation of a service bureau or for the benefit of any other person or entity without the prior written permission of Midiman, Inc. or M-Audio.
-        </FontAsset>
+        <ListAsset Template="IconAndTextButtonTemplate" Items="BoundTo=Buttons,BindingDirection=TwoWay" XName="ListAsset" Position="0,0,0.75,0.1" Margin="0.001,0,0.001,0"/>
 
-        <FontAsset FontColor="Color.Black" FontSize="24" Position="0,0,0.75,0" FontFamily="SegoeLight" Margin="0.025,0.025,0.025,0.025" MultiLine="true" WordWrap="true" AntiAlias="false">
-          This is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test which is a test.
-        </FontAsset>
-        </StackAsset>
+      </StackAsset>
     </RectangleAsset>
   </BoxShadowAsset>
 </screen>

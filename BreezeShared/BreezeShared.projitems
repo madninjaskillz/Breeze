@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\CentredImageAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ContainerAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundAssetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundButtonAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\FontAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundValue.cs" />
@@ -36,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\StaticTemplates\TextBox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\TemplateAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\TextBoxAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\VirtualizedDataContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\XmlClasses.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\XMLClass\Base.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BaseScreen.cs" />
@@ -78,12 +80,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)BreezeInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScreenAbstractor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScreenManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Screens\DataboundScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\DialogScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\IScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Screens\MGUIViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Screens\XuiDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ScreenXMLHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SmartSpriteBatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Solids.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Thickness.cs" />
   </ItemGroup>
 </Project>

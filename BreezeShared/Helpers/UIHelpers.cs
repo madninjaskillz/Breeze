@@ -72,6 +72,7 @@ namespace Breeze.Helpers
                 }
             }
 
+
             return result.Where(t => !(t is ContentAsset)).ToList();
         }
 

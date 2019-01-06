@@ -32,7 +32,7 @@ namespace Breeze.AssetTypes
         //public DataboundValue<Texture2D> Texture2D { get; set; } = new DataboundValue<Texture2D>();
 
         public DataboundValue<float> Scale { get; set; } = new DataboundValue<float>(1);
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             if (Solids.Instance.InputService.IsPressed(InputService.ShiftKeys.LeftShift1))
             {

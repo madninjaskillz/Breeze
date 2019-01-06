@@ -35,23 +35,6 @@ namespace Breeze.AssetTypes
             set => Enabled.Value = value;
         }
 
-        public override void LoadFromXml(XmlAttributeCollection childNodeAttributes)
-        {
-            
-            if (childNodeAttributes.GetNamedItem("Position")?.Value != null)
-                Position = UIElement.GetDBValue<FloatRectangle>(childNodeAttributes.GetNamedItem("Position")?.Value);
-            if (childNodeAttributes.GetNamedItem("Margin")?.Value != null)
-                Margin = UIElement.GetDBValue<Thickness>(childNodeAttributes.GetNamedItem("Margin")?.Value);
-            if (childNodeAttributes.GetNamedItem("Symbol")?.Value != null)
-                Symbol = UIElement.GetDBValue<MDL2Symbols?>(childNodeAttributes.GetNamedItem("Symbol")?.Value);
-            if (childNodeAttributes.GetNamedItem("Enabled")?.Value != null)
-                Enabled = UIElement.GetDBValue<bool>(childNodeAttributes.GetNamedItem("Enabled")?.Value);
-            if (childNodeAttributes.GetNamedItem("FontMargin")?.Value != null)
-                FontMargin = UIElement.GetDBValue<float>(childNodeAttributes.GetNamedItem("FontMargin")?.Value);
-            if (childNodeAttributes.GetNamedItem("Text")?.Value != null)
-                Text = UIElement.GetDBValue<string>(childNodeAttributes.GetNamedItem("Text")?.Value);
-        }
-
         [JsonIgnore]
         public DataboundEvent<ButtonClickEventArgs> Clicked { get; set; } = new DataboundEvent<ButtonClickEventArgs>();
 
@@ -172,7 +155,7 @@ namespace Breeze.AssetTypes
 
 
 
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             HandleKBInput();
 
@@ -306,7 +289,7 @@ namespace Breeze.AssetTypes
 
             foreach (DataboundAsset screenAsset in assets)
             {
-                screenAsset.Draw(spriteBatch, screen, opacity, clip, bgTexture);
+                screenAsset.Draw(screenResources,spriteBatch, screen, opacity, clip, bgTexture);
             }
         }
     }

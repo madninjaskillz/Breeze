@@ -7,11 +7,30 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Breeze.Helpers
 {
     public static class ReflectionHelpers
     {
+     
+            public static object GetDefaultValue(this Type t)
+            {
+                if (t == typeof(Color))
+                {
+                    return Color.CornflowerBlue;
+                }
+
+                if (t.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(t) == null)
+                {
+                    return Activator.CreateInstance(t);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        
         public static bool DoesTypeSupportInterface(Type type, Type inter)
         {
             if (inter.IsAssignableFrom(type))

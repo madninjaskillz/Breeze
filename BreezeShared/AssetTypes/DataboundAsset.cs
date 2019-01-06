@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Breeze.AssetTypes;
+using Breeze.AssetTypes.XMLClass;
 using Breeze.Helpers;
 using Breeze.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 
 namespace Breeze.AssetTypes.DataBoundTypes
 {
@@ -23,36 +26,41 @@ namespace Breeze.AssetTypes.DataBoundTypes
 
         public bool IsDirty { get; set; }
     }
-    public class ScreenAsset : DataboundAsset
-    {
-
-    }
 
     public class DataboundContainterAsset : DataboundAsset
     {
         public DataboundValue<List<DataboundAsset>> Children { get; set; } = new DataboundValue<List<DataboundAsset>>(new List<DataboundAsset>());
-        
+
         public void SetChildrenOriginToMyOrigin()
         {
             if (Children.Value != null)
             {
                 foreach (var child in Children.Value)
                 {
-                    child.ParentPosition = new FloatRectangle(this.ActualPosition);
+                    child.ParentPosition = new FloatRectangle(this.ActualPosition.AdjustForMargin(Margin));
                     //child.Position.Value = new FloatRectangle(this.Position.Value.X,this.Position.Value.Y,child.Position.Value.Width,child.Position.Value.Height);
                 }
             }
         }
 
-
+        public void SetChildrenOriginToMyOrigin(FloatRectangle actualPosition)
+        {
+            if (Children.Value != null)
+            {
+                foreach (var child in Children.Value)
+                {
+                    child.ParentPosition = actualPosition;
+                    //child.Position.Value = new FloatRectangle(this.Position.Value.X,this.Position.Value.Y,child.Position.Value.Width,child.Position.Value.Height);
+                }
+            }
+        }
     }
 
     public class Binding
     {
         public DataboundAsset.DataboundValue Property { get; set; }
         public string BoundTo { get; set; }
-
-        public MGUIViewModel.BindType Direction { get; set; }
+        public BindType Direction { get; set; }
     }
 
     public class DataboundAssetWhereChildIsContentAsset : DataboundAsset
@@ -65,6 +73,21 @@ namespace Breeze.AssetTypes.DataBoundTypes
 
     public partial class DataboundAsset
     {
+        public override string ToString()
+        {
+            return XName + ", Type:" + this.GetType().ToString() + ", ActualPosition:" + this.ActualPosition+", Position:"+this.Position.ToString() + ", ParentName:" + this.ParentAsset?.XName;
+        }
+        public class AssetAttribute : Attribute
+        {
+            public string XMLName;
+    
+            public AssetAttribute(string xmlName)
+            {
+                XMLName = xmlName;
+            }
+        }
+        
+
         public DataboundValue<bool> IsHidden { get; set; } = new DataboundValue<bool>();
         public string Key { get; set; }
         public int ZIndex { get; set; } = 0;
@@ -72,18 +95,13 @@ namespace Breeze.AssetTypes.DataBoundTypes
         public FloatRectangle? Clip { get; set; } = null;
 
         public Rectangle? ScissorRect { get; set; }
-        //public FloatRectangle Position { get; set; }
-
-        public virtual void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+       
+        public virtual void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             throw new NotImplementedException();
         }
-
-
-
-
-        public string XName { get; set; }
-        //public DataboundAsset Parent { get; set; } = null;
+        
+        public DataboundValue<string> XName { get; set; } = new DataboundValue<string>();
         public DataboundValue<Thickness> Margin { get; set; } = new DataboundValue<Thickness>();
 
         [XmlIgnore]
@@ -174,8 +192,9 @@ namespace Breeze.AssetTypes.DataBoundTypes
 
         public abstract class DataboundValue
         {
+            public DataboundAsset ParentAsset;
             public string BoundTo { get; set; } = null;
-            public MGUIViewModel.BindType BindingDirection { get; set; } = MGUIViewModel.BindType.OneWay;
+            public BindType BindingDirection { get; set; } = BindType.OneWay;
 
             [XmlIgnore]
             public Guid Id = Guid.NewGuid();
@@ -186,11 +205,135 @@ namespace Breeze.AssetTypes.DataBoundTypes
             {
                 this.OnReverseBindGeneric = action;
             }
+
+            public object ObjectValue { get; set; }
         }
 
-        public virtual void LoadFromXml(XmlAttributeCollection childNodeAttributes)
+        public void LoadFromXml(XmlAttributeCollection childNodeAttributes)
         {
-            throw new NotImplementedException();
+            PropertyInfo[] props = this.GetType().GetAllProperties();
+
+            foreach (PropertyInfo propertyInfo in props)
+            {
+                AssetAttribute attr = propertyInfo.GetCustomAttribute<AssetAttribute>();
+                if (attr != null)
+                {
+                    if (childNodeAttributes.GetNamedItem(attr.XMLName)?.Value != null)
+                    {
+                        string temp = childNodeAttributes.GetNamedItem(attr.XMLName)?.Value;
+                        if (temp != null)
+                        {
+
+                            DataboundValue temp2 = DataboundAssetExtensions.GetDBValue(temp, propertyInfo.PropertyType.GenericTypeArguments.First());
+                            
+                            propertyInfo.SetValue(this, temp2);
+                        }
+
+                    }
+                }
+                else
+                {
+                    string name = propertyInfo.Name;
+                    string temp = childNodeAttributes.GetNamedItem(name)?.Value;
+                    if (temp != null)
+                    {
+                        DataboundValue temp2 = DataboundAssetExtensions.GetDBValue(temp, propertyInfo.PropertyType.GenericTypeArguments.First());
+                        propertyInfo.SetValue(this, temp2);
+                    }
+                }
+            }
+
+            Debug.WriteLine(this);
+        }
+
+        public static DataboundAsset CreateFromXml(XmlAttributeCollection childNodeAttributes, Type type, DataboundAsset parentAsset, BaseScreen baseScreen)
+        {
+            Debug.WriteLine("Type:" + type.ToString());
+            DataboundAsset asset = (DataboundAsset)Activator.CreateInstance(type);
+
+            var assetType = asset.GetType();
+
+            PropertyInfo[] tprops = assetType.GetProperties();
+            foreach (PropertyInfo propertyInfo in tprops)
+            {
+                Debug.WriteLine(propertyInfo.GetMethod.ReturnType.AssemblyQualifiedName.Contains("DataboundValue"));
+            }
+            PropertyInfo[] props = tprops.Where(propertyInfo => propertyInfo.GetMethod.ReturnType.AssemblyQualifiedName.Contains("DataboundValue")).ToArray();
+            
+            List<string> childNodeNames = new List<string>();
+            foreach (object childNodeAttribute in childNodeAttributes)
+            {
+                childNodeNames.Add(((XmlAttribute)childNodeAttribute).Name);
+            }
+
+            Dictionary<string,PropertyInfo> prps = new Dictionary<string, PropertyInfo>();
+
+            foreach (PropertyInfo propertyInfo in props)
+            {
+                AssetAttribute attr = propertyInfo.GetCustomAttribute<AssetAttribute>();
+
+                string name = propertyInfo.Name;
+                if (attr != null)
+                {
+                    name = attr.XMLName;
+                }
+
+                prps.Add(name, propertyInfo);
+            }
+
+            Breeze.VirtualizedDataContext embeddedDataContext = new VirtualizedDataContext();
+
+            foreach (string s in childNodeNames)
+            {
+                if (prps.ContainsKey(s))
+                {
+                    PropertyInfo p = prps[s];
+
+                    string temp = childNodeAttributes.GetNamedItem(s)?.Value;
+                    if (temp != null)
+                    {
+                        DataboundValue temp3 = (DataboundValue)DataboundAssetExtensions.GetDBerValue(temp, p.PropertyType.GenericTypeArguments.First());
+                        
+                        p.SetValue(asset, temp3);
+                    }
+                }
+                else
+                {
+                    
+                    if (s.StartsWith("x_"))
+                    {
+                        string propName = s.Substring(2);
+
+                        string temp = childNodeAttributes.GetNamedItem(s)?.Value;
+
+                        string propType = temp.Split('|').First();
+                        string value = temp.Split('|').Last();
+                  
+                        Type deftype = Type.GetType(propType) ?? Type.GetType("System." + propType);
+
+                        if (temp != null)
+                        {
+                            DataboundValue temp3 = (DataboundValue)DataboundAssetExtensions.GetDBerValue(value, deftype);
+
+                            embeddedDataContext.Store.Add(propName, value);
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Could not find prop: " + s);
+                    }
+                }
+            }
+
+            if (embeddedDataContext.Store.Count > 0)
+            {
+                asset.VirtualizedDataContext = embeddedDataContext;
+                asset.VirtualizedDataContext.Screen = baseScreen;
+            }
+
+            Debug.WriteLine(asset);
+
+            return asset;
         }
     }
 

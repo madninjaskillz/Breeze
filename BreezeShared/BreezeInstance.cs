@@ -137,7 +137,7 @@ namespace Breeze
 
         public void Draw(GameTime gameTime, bool showDebug)
         {
-            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             FrameCounter.Update(deltaTime);
 
             //if (SpriteBatch.GraphicsDevice.Viewport.Bounds != Solids.Bounds)
@@ -168,15 +168,19 @@ namespace Breeze
 
             if (Debugger.IsAttached)
             {
-                    SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
-                    Fonts.Consolas.GetFont(40).DrawText(SpriteBatch, new Vector2(Solids.Instance.Bounds.Width - 601, 1),$"FPS: {FrameCounter.CurrentFramesPerSecond}, AVG: {FrameCounter.AverageFramesPerSecond}",Color.Black);
-                    Fonts.Consolas.GetFont(40).DrawText(SpriteBatch, new Vector2(Solids.Instance.Bounds.Width - 600, 0),$"FPS: {FrameCounter.CurrentFramesPerSecond}, AVG: {FrameCounter.AverageFramesPerSecond}",Color.White);
-                    SpriteBatch.End();
-                }
+                SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
+                Fonts.Consolas.GetFont(40).DrawText(SpriteBatch, new Vector2(Solids.Instance.Bounds.Width - 601, 1),
+                    $"FPS: {FrameCounter.CurrentFramesPerSecond}, AVG: {FrameCounter.AverageFramesPerSecond}",
+                    Color.Black);
+                Fonts.Consolas.GetFont(40).DrawText(SpriteBatch, new Vector2(Solids.Instance.Bounds.Width - 600, 0),
+                    $"FPS: {FrameCounter.CurrentFramesPerSecond}, AVG: {FrameCounter.AverageFramesPerSecond}",
+                    Color.White);
+                SpriteBatch.End();
+            }
 
             if (showDebug && true)
             {
-                
+
                 SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
                 Vector2 fontscale = new Vector2(0.4f, 0.4f);
                 int ps = 50 + (BreezeDebug.ConsoleHistory.Count * 30);
@@ -187,8 +191,9 @@ namespace Breeze
                 {
                     if (ps > 0)
                     {
-                        Fonts.Consolas.GetFont(50).DrawText(SpriteBatch, new Vector2(10, ps), history, Color.White, new Vector2(0.5f, 0.5f));
-                        
+                        Fonts.Consolas.GetFont(50).DrawText(SpriteBatch, new Vector2(10, ps), history, Color.White,
+                            new Vector2(0.5f, 0.5f));
+
                     }
 
                     ps = ps + 30;
@@ -199,95 +204,95 @@ namespace Breeze
 
             if (showDebug && false)
             {
-                float step = Solids.Instance.Bounds.Width / (float)BenchMarkProvider.Steps;
-                float htStep = 100 / (float)Solids.Instance.Bounds.Height;
+                //    float step = Solids.Instance.Bounds.Width / (float)BenchMarkProvider.Steps;
+                //    float htStep = 100 / (float)Solids.Instance.Bounds.Height;
 
-                int ps = 25;
+                //    int ps = 25;
 
-                foreach (KeyValuePair<string, BenchMarkDetails> bench in BenchMarkProvider.BenchMarks)
-                {
-                    TimeSpan tm = bench.Value.FrameHistorySpan[BenchMarkProvider.FramePointer % BenchMarkProvider.Steps];
-                    TimeSpan xx = (bench.Value.TotalTime - tm);
-                    xx = bench.Value.FrameTime;
-                    bench.Value.FrameHistory[(BenchMarkProvider.FramePointer + 1) % BenchMarkProvider.Steps] = xx.TotalMilliseconds;
-                    bench.Value.FrameHistorySpan[BenchMarkProvider.FramePointer % BenchMarkProvider.Steps] = bench.Value.FrameTime;
-                    
-                }
+                //    foreach (KeyValuePair<string, BenchMarkDetails> bench in BenchMarkProvider.BenchMarks)
+                //    {
+                //        TimeSpan tm = bench.Value.FrameHistorySpan[BenchMarkProvider.FramePointer % BenchMarkProvider.Steps];
+                //        TimeSpan xx = (bench.Value.TotalTime - tm);
+                //        xx = bench.Value.FrameTime;
+                //        bench.Value.FrameHistory[(BenchMarkProvider.FramePointer + 1) % BenchMarkProvider.Steps] = xx.TotalMilliseconds;
+                //        bench.Value.FrameHistorySpan[BenchMarkProvider.FramePointer % BenchMarkProvider.Steps] = bench.Value.FrameTime;
 
-                SpriteBatch.DrawSolidRectangle(new FloatRectangle(0, 25, Solids.Instance.Bounds.Width / 2f, (BenchMarkProvider.BenchMarks.Count + 1) * 25), Color.Black * 0.85f);
+                //    }
 
-                int cttt = 0;
-                Vector2[] fpspoints = new Vector2[BenchMarkProvider.Steps];
-                foreach (KeyValuePair<string, BenchMarkDetails> b in BenchMarkProvider.BenchMarks)//.ToList().OrderByDescending(yyy=>yyy.Value.FrameTime))
-                {
-                    cttt = cttt + 5;
-                    float th = 0;
-                    Vector2[] points = new Vector2[BenchMarkProvider.Steps];
-                    for (int i = 0; i < BenchMarkProvider.Steps; i++)
-                    {
-                        int ptr = ((BenchMarkProvider.FramePointer + 2) + i) % BenchMarkProvider.Steps;
-                        double h = b.Value.FrameHistory[ptr];
+                //    SpriteBatch.DrawSolidRectangle(new FloatRectangle(0, 25, Solids.Instance.Bounds.Width / 2f, (BenchMarkProvider.BenchMarks.Count + 1) * 25), Color.Black * 0.85f);
 
-                        int hhh = 0;
-                        if (h > 0)
-                        {
-                            hhh = (int)(h / htStep);
-                            if (double.IsNaN(hhh))
-                            {
-                                hhh = 0;
-                            }
-                        }
+                //    int cttt = 0;
+                //    Vector2[] fpspoints = new Vector2[BenchMarkProvider.Steps];
+                //    foreach (KeyValuePair<string, BenchMarkDetails> b in BenchMarkProvider.BenchMarks)//.ToList().OrderByDescending(yyy=>yyy.Value.FrameTime))
+                //    {
+                //        cttt = cttt + 5;
+                //        float th = 0;
+                //        Vector2[] points = new Vector2[BenchMarkProvider.Steps];
+                //        for (int i = 0; i < BenchMarkProvider.Steps; i++)
+                //        {
+                //            int ptr = ((BenchMarkProvider.FramePointer + 2) + i) % BenchMarkProvider.Steps;
+                //            double h = b.Value.FrameHistory[ptr];
 
-                        if (i == cttt)
-                        {
-                            if (hhh > 0)
-                            {
-                                th = Solids.Instance.Bounds.Height - hhh;
-                            }
-                        }
+                //            int hhh = 0;
+                //            if (h > 0)
+                //            {
+                //                hhh = (int)(h / htStep);
+                //                if (double.IsNaN(hhh))
+                //                {
+                //                    hhh = 0;
+                //                }
+                //            }
 
-                        points[i] = new Vector2(i * step, Solids.Instance.Bounds.Height - hhh);
-                    }
+                //            if (i == cttt)
+                //            {
+                //                if (hhh > 0)
+                //                {
+                //                    th = Solids.Instance.Bounds.Height - hhh;
+                //                }
+                //            }
 
-                    SpriteBatch.DrawLine(points, b.Value.Color * 0.5f, brushSize: 2);
+                //            points[i] = new Vector2(i * step, Solids.Instance.Bounds.Height - hhh);
+                //        }
 
-                    SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
-                    string btxt = b.Key + " - " + b.Value.NumberOfTimesRun + " - " + b.Value.FrameHistory[(BenchMarkProvider.FramePointer + 1) % BenchMarkProvider.Steps] + "ms" + " -> " + b.Value.AverageTime.TotalMilliseconds + " ms";
+                //        SpriteBatch.DrawLine(points, b.Value * 0.5f, brushSize: 2);
 
-                    if (b.Value.FrameHistory[(BenchMarkProvider.FramePointer + 1) % BenchMarkProvider.Steps] > 5)
-                    {
-                        btxt = ">>> " + btxt;
-                    }
+                //        SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
+                //        string btxt = b.Key + " - " + b.Value.NumberOfTimesRun + " - " + b.Value.FrameHistory[(BenchMarkProvider.FramePointer + 1) % BenchMarkProvider.Steps] + "ms" + " -> " + b.Value.AverageTime.TotalMilliseconds + " ms";
 
-                    Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, new Vector2(10, ps),btxt, b.Value.Color);
-                    Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, points[cttt%points.Length], btxt + " -< "+th, b.Value.Color);
-                    SpriteBatch.End();
-                    ps = ps + 25;
-                    b.Value.FrameTime = TimeSpan.Zero;
+                //        if (b.Value.FrameHistory[(BenchMarkProvider.FramePointer + 1) % BenchMarkProvider.Steps] > 5)
+                //        {
+                //            btxt = ">>> " + btxt;
+                //        }
 
-                }
+                //        Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, new Vector2(10, ps),btxt, b.Value);
+                //        Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, points[cttt%points.Length], btxt + " -< "+th, b.Value);
+                //        SpriteBatch.End();
+                //        ps = ps + 25;
+                //        b.Value.FrameTime = TimeSpan.Zero;
 
-                float thh = 0;
-                for (int i = 0; i < BenchMarkProvider.Steps; i++)
-                {
-                    int ptr = ((BenchMarkProvider.FramePointer + 2) + i) % BenchMarkProvider.Steps;
-                    float hhhh = BenchMarkProvider.FPSLog[ptr] / (60f / Solids.Instance.Bounds.Height);
-                    fpspoints[i] = new Vector2(i * step, hhhh);
-                    if (i == cttt)
-                    {
-                        thh = hhhh;
-                    }
-                }
+                //    }
 
-                SpriteBatch.DrawLine(fpspoints, Color.White * 0.25f, brushSize: 2);
-                SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
-                Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, new Vector2(10, ps), "FPS:" + FrameCounter.AverageFramesPerSecond, Color.White * .5f);
-                Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, new Vector2((Solids.Instance.Bounds.Width / BenchMarkProvider.Steps) * cttt, thh), "FPS:" + FrameCounter.CurrentFramesPerSecond, Color.White * .5f);
-                SpriteBatch.End();
-                BenchMarkProvider.NextFrame();
+                //    float thh = 0;
+                //    for (int i = 0; i < BenchMarkProvider.Steps; i++)
+                //    {
+                //        int ptr = ((BenchMarkProvider.FramePointer + 2) + i) % BenchMarkProvider.Steps;
+                //        float hhhh = BenchMarkProvider.FPSLog[ptr] / (60f / Solids.Instance.Bounds.Height);
+                //        fpspoints[i] = new Vector2(i * step, hhhh);
+                //        if (i == cttt)
+                //        {
+                //            thh = hhhh;
+                //        }
+                //    }
+
+                //    SpriteBatch.DrawLine(fpspoints, Color.White * 0.25f, brushSize: 2);
+                //    SpriteBatch.Begin(blendState: BlendState.NonPremultiplied);
+                //    Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, new Vector2(10, ps), "FPS:" + FrameCounter.AverageFramesPerSecond, Color.White * .5f);
+                //    Fonts.Consolas.GetFont(20).DrawText(SpriteBatch, new Vector2((Solids.Instance.Bounds.Width / BenchMarkProvider.Steps) * cttt, thh), "FPS:" + FrameCounter.CurrentFramesPerSecond, Color.White * .5f);
+                //    SpriteBatch.End();
+                //    BenchMarkProvider.NextFrame();
+                //}
             }
         }
-
 
         public void TextInputHandler(object sender, TextInputEventArgs e)
         {

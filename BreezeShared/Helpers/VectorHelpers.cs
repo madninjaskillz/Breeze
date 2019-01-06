@@ -10,6 +10,28 @@ namespace Breeze.Helpers
 {
     public static class VectorHelpers
     {
+        public static FloatRectangle AdjustForMargin(this FloatRectangle inputRectangle, Thickness margin) => new FloatRectangle(inputRectangle.X + margin.Left, inputRectangle.Y + margin.Top, inputRectangle.Width - margin.HorizontalMargin, inputRectangle.Height - margin.VerticalMargin);
+
+        public static FloatRectangle AdjustForMargin(this FloatRectangle inputRectangle,
+            DataboundAsset.DataboundValue<Thickness> margin)
+        {
+            if (inputRectangle.Height == 0 || !margin.HasValue())
+            {
+                return inputRectangle;
+            }
+            else
+            {
+                return new FloatRectangle(inputRectangle.X + margin.Value.Left, inputRectangle.Y + margin.Value.Top,
+                    inputRectangle.Width - margin.Value.HorizontalMargin,
+                    inputRectangle.Height - margin.Value.VerticalMargin);
+            }
+        }
+
+        public static FloatRectangle PadForMargin(this FloatRectangle inputRectangle, Thickness margin) => new FloatRectangle(inputRectangle.X + margin.Left, inputRectangle.Y + margin.Top, inputRectangle.Width + margin.HorizontalMargin, inputRectangle.Height + margin.VerticalMargin);
+        public static Vector2 PadForMargin(this Vector2 inputVector2, Thickness margin) => new Vector2(inputVector2.X + margin.HorizontalMargin, inputVector2.Y + margin.VerticalMargin);
+            
+        public static Vector2 PadForMargin(this Vector2 inputVector2, DataboundAsset.DataboundValue<Thickness> margin) => inputVector2.Y == 0 || !margin.HasValue() ? inputVector2 : new Vector2(inputVector2.X + margin.Value.HorizontalMargin, inputVector2.Y + margin.Value.VerticalMargin);
+
         public static Vector2 ToVector2(this DataboundAsset.DataboundValue<FloatRectangle> rect)
         {
             return rect.Value.ToVector2;
@@ -18,8 +40,8 @@ namespace Breeze.Helpers
         public static FloatRectangle ConstrainTo(this FloatRectangle input, FloatRectangle constrain)
         {
             return new FloatRectangle(
-                constrain.X + ( input.X),
-                constrain.Y + ( input.Y),
+                constrain.X + (input.X),
+                constrain.Y + (input.Y),
                 input.Width,
                  input.Height
             );
@@ -27,8 +49,8 @@ namespace Breeze.Helpers
             return new FloatRectangle(
                 constrain.X + (constrain.Width * input.X),
                 constrain.Y + (constrain.Width * input.Y),
-                constrain.Width*input.Width,
-                constrain.Height*input.Height
+                constrain.Width * input.Width,
+                constrain.Height * input.Height
                 );
         }
 
@@ -106,7 +128,7 @@ namespace Breeze.Helpers
             }
         }
 
-        public static void DoBorderAction(Action<int,int> action)
+        public static void DoBorderAction(Action<int, int> action)
         {
             for (int y = -1; y <= 1; y++)
             {
@@ -119,7 +141,7 @@ namespace Breeze.Helpers
 
         public static Rectangle Add(this Rectangle rect, Vector2 input)
         {
-            return new Rectangle(rect.X + (int) input.X, rect.Y + (int) input.Y, rect.Width, rect.Height);
+            return new Rectangle(rect.X + (int)input.X, rect.Y + (int)input.Y, rect.Width, rect.Height);
         }
 
         public static Rectangle Clip(this Rectangle rect, FloatRectangle? clip)
@@ -233,7 +255,7 @@ namespace Breeze.Helpers
         }
         public static FloatRectangle Clamp(this FloatRectangle rect, FloatRectangle? clamp, bool leftClampOnly = false)
         {
-//            using (new BenchMark())
+            //            using (new BenchMark())
             {
                 if (clamp.HasValue == false) return rect;
 
@@ -290,7 +312,7 @@ namespace Breeze.Helpers
         }
 
 
-        public static bool Intersects(this  Vector2 pos, Rectangle rect)
+        public static bool Intersects(this Vector2 pos, Rectangle rect)
         {
             return pos.X > rect.X && pos.X < rect.Right && pos.Y > rect.Y && pos.Y < rect.Bottom;
         }

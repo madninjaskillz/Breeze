@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -36,8 +37,27 @@ namespace Breeze.Screens
         public InteractiveAsset ActiveButton = null;
         public bool IsFullScreen { get; set; } = false;
 
-        public Dictionary<string,DataboundAsset> Templates = new Dictionary<string,DataboundAsset>();
+        public class Resources
+        {
+            public Dictionary<string, string> TemplateXMLs = new Dictionary<string, string>();
 
+            public DataboundAsset GetTemplate(string name)
+            {
+                if (TemplateXMLs.ContainsKey(name) == false)
+                {
+                    return null;
+                }
+
+                string xml = TemplateXMLs[name];
+
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(xml);
+
+                return ScreenXMLHelpers.HandleChildren(this, xmlDoc).First();
+            }
+        }
+
+        public Resources ScreenResources { get; set; } = new Resources();
         public List<DataboundAsset> RealTime = new List<DataboundAsset>();
         public List<DataboundAsset> AllAssets = new List<DataboundAsset>();
         public List<DataboundAsset> FixedAssets = new List<DataboundAsset>();
@@ -56,65 +76,58 @@ namespace Breeze.Screens
         private bool mouseActive = false;
         private readonly float dimSpeed = 0.06f;
 
-        public void LoadScreen(XmlNode node)
-        {
-            if (node.FirstChild.Attributes.GetNamedItem("FixedAspectRatio")?.Value != null) FixedAspectRatio = float.Parse(node.FirstChild.Attributes.GetNamedItem("FixedAspectRatio")?.Value);
-            FixedAssets.AddRange(HandleChildren(node.FirstChild));
+        public DataboundAsset RootAsset => FixedAssets.FirstOrDefault();
 
+        public VirtualizedDataContext RootContext
+        {
+            get => RootAsset?.VirtualizedDataContext;
+            set => RootAsset.VirtualizedDataContext = value;
+        }
+        public void LoadXAML()
+        {
+            Type type = this.GetType();
+
+            Debug.WriteLine(type);
+            string path = "Screens\\" + type.Name.Substring(0, type.Name.Length - ("Screen").Length) + "\\" + type.Name + ".xml";
+
+            string xmlTest = Solids.Instance.Storage.FileSystemStorage.ReadText(path);
+
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(xmlTest);
+            LoadScreen(xmlDoc);
         }
 
-        public List<DataboundAsset> HandleChildren(XmlNode node)
+        public void LoadScreen(XmlNode node)
         {
-            List<DataboundAsset> results = new List<DataboundAsset>();
-            List<Type> types = ReflectionHelpers.TypesImplementingInterface(typeof(DataboundAsset)).ToList();
+            XmlNode firstChild = node.FirstChild;
+            if (firstChild.Attributes.GetNamedItem("FixedAspectRatio")?.Value != null) FixedAspectRatio = float.Parse(node.FirstChild.Attributes.GetNamedItem("FixedAspectRatio")?.Value);
 
-            Debug.WriteLine(node);
+            List<DataboundAsset> assetsFromXml = ScreenXMLHelpers.HandleChildren(ScreenResources, firstChild);
 
-            foreach (XmlNode childNode in node.ChildNodes)
+            FixedAssets.AddRange(assetsFromXml);
+
+            foreach (DataboundAsset databoundAsset in FixedAssets)
             {
-                Debug.WriteLine(childNode);
-                Debug.WriteLine(childNode.Attributes);
+                FixChildParentRelationShips(databoundAsset);
+            }
 
-                Type type = types.FirstOrDefault(t => t.Name == childNode.Name);
-                if (type != null)
+            Debug.WriteLine(FixedAssets);
+        }
+
+        public void FixChildParentRelationShips(DataboundAsset asset)
+        {
+            if (asset is DataboundContainterAsset containerAsset)
+            {
+                if (containerAsset.Children?.Value != null)
                 {
-                    DataboundAsset asset = (DataboundAsset)Activator.CreateInstance(type);
-                    asset.LoadFromXml(childNode.Attributes);
-
-                    if (asset is DataboundAssetWhereChildIsContentAsset masterAsset && !string.IsNullOrEmpty(childNode.InnerText))
+                    foreach (DataboundAsset databoundAsset in containerAsset.Children.Value)
                     {
-                        masterAsset.LoadContent(childNode.InnerText);
-                    }
-
-                    if (asset is DataboundContainterAsset containterAsset)
-                    {
-                        containterAsset.Children.Value.AddRange(HandleChildren(childNode));
-                    }
-
-                    results.Add(asset);
-                }
-                else
-                {
-                    if (childNode.Name.ToLower() == "resources")
-                    {
-                        foreach (XmlNode xmlNode in childNode.ChildNodes)
-                        {
-                            if (xmlNode.Name.ToLower() == "template")
-                            {
-                                string nm = (string)xmlNode.Attributes.GetNamedItem("Name").Value;
-
-                                Templates.Add(nm,HandleChildren(xmlNode).First());
-
-                                Debug.WriteLine(nm);
-                            }
-                        }
+                        databoundAsset.ParentAsset = asset;
                     }
                 }
             }
-
-            return results;
         }
-
+        
         public class InputBindingEvents
         {
             internal Dictionary<InputService.InputBinding, List<Action>> inputBindingEvents = new Dictionary<InputService.InputBinding, List<Action>>();
@@ -159,17 +172,6 @@ namespace Breeze.Screens
         private bool dragging = false;
         private Vector2? dragOffset = null;
 
-        //internal InputBindings.ContextMenu ShowContextMenu(List<SequencerScreen.ContextControl> contextControls)
-        //{
-        //    Vector2 ps = Solids.Instance.InputService.MouseScreenPosition;
-
-        //    if (Solids.Instance.InputService.MouseActive && MouseScreenPos.HasValue)
-        //    {
-        //        ps = Solids.Instance.InputService.MouseScreenPosition;
-        //    }
-
-        //    return InputBindings.ContextMenu.OpenContextMenu(new FloatRectangle(ps.X, ps.Y, 1, 1), contextControls.Select(y => y.ButtonBasics).ToList());
-        //}
         public bool IsPressed(InputService.InputBinding binding)
         {
             return (Solids.Instance.ScreenManager.ActiveScreen() == this && binding.IsPressed(Solids.Instance.InputService.CurrentStack));
@@ -200,23 +202,7 @@ namespace Breeze.Screens
             }
         }
 
-        public void AddOrUpdateDynamicAsset(DataboundAsset asset)
-        {
-            //DataboundAsset da = DynamicProcessedAssets.FirstOrDefault(t => t.Key == asset.Key);
-
-            //if (da != null)
-            //{
-            //    da.Update(da, asset);
-            //}
-            //else
-            //{
-            //    DynamicProcessedAssets.Add(asset);
-            //}
-
-            //asset.IsDirty = true;
-        }
-
-        private int allAssetHash=0;
+        private int allAssetHash = 0;
         public void UpdateAllAssets()
         {
 
@@ -228,8 +214,6 @@ namespace Breeze.Screens
                 allAssetHash = hash;
             }
 
-            //AllAssets = new List<DataboundAsset>();
-            //AllAssets.AddRange(GetAssetsAndTheirChildren(FixedAssets));
             AllAssets.AddRange(GetAssetsAndTheirChildren(DynamicProcessedAssets.Select(x => (DataboundAsset)x).ToList()));
 
         }
@@ -264,7 +248,7 @@ namespace Breeze.Screens
             {
                 foreach (DataboundAsset databoundAsset in asset.Children.Value)
                 {
-                    if ((databoundAsset as T)!=null)
+                    if ((databoundAsset as T) != null)
                     {
                         results.Add((T)databoundAsset);
                     }
@@ -286,7 +270,7 @@ namespace Breeze.Screens
 
         public List<DataboundAsset> FlattenTree(DataboundAsset asset)
         {
-            List<DataboundAsset> result = new List<DataboundAsset> {asset};
+            List<DataboundAsset> result = new List<DataboundAsset> { asset };
 
             if (asset is DataboundContainterAsset dbc)
             {
@@ -295,8 +279,8 @@ namespace Breeze.Screens
                     result.AddRange(FlattenTree(databoundAsset));
                 }
             }
-            
-            return result.Where(t=>!(t is ContentAsset)).ToList();
+
+            return result.Where(t => !(t is ContentAsset)).ToList();
         }
 
         public List<DataboundAsset> FlattenTree(List<DataboundAsset> assets)
@@ -304,49 +288,11 @@ namespace Breeze.Screens
             return assets.SelectMany(FlattenTree).ToList();
         }
 
-
-
-
         public List<DataboundAsset> GetVirtualChildren(DataboundAsset screenAsset)
         {
             List<DataboundAsset> result = new List<DataboundAsset>();
 
-       if (screenAsset is TemplateAsset templateAsset)
-            {
-                if (!string.IsNullOrWhiteSpace(templateAsset.Template.Value))
-                {
-                    string templateName = templateAsset.Template.Value;
-
-                    DataboundAsset templateContent = Templates[templateName].DeepClone();
-                    templateContent.ParentPosition = templateAsset.ActualPosition;
-
-                    //if (templateContent is DataboundContainterAsset templateContainterAsset)
-                    //{
-                    //    List<DataboundAsset> childs = templateAsset.Children.Value.DeepClone();
-                    //    foreach (DataboundAsset databoundAsset in childs)
-                    //    {
-                    //        databoundAsset.ParentPosition = templateAsset.ActualPosition;
-                    //    }
-                    //    List<ContentAsset> content = FindChildrenOfType<ContentAsset>(templateContainterAsset);
-
-                        
-
-                    //    foreach (var cont in content)
-                    //    {
-                    //        cont.Children.Value = childs;
-                    //        cont.ParentPosition = templateAsset.ActualPosition;
-                    //    }
-
-                    //  //  templateContainterAsset.Children = new DataboundAsset.DataboundValue<List<DataboundAsset>>();
-                    //}
-
-                    result.Add(templateContent);
-                    //result.AddRange(GetVirtualChildren(templateContent));
-
-
-                }
-            }
-            else if (screenAsset is DataboundContainterAsset asset)
+            if (screenAsset is DataboundContainterAsset asset)
             {
                 if (asset.Children.Value != null)
                 {
@@ -374,22 +320,9 @@ namespace Breeze.Screens
 
         public void ProcessDynamicAssets()
         {
-            foreach (DataboundAsset dynamicAsset in DynamicAssets)
-            {
-                if (dynamicAsset != null)
-                {
-                    AddOrUpdateDynamicAsset(dynamicAsset);
-                }
-            }
-
-            DynamicProcessedAssets.RemoveAll(y => DynamicAssets.All(p => p.Key != y.Key));
-
             UpdateAllAssets();
         }
-
-
-
-
+        
         public virtual async Task Initialise()
         {
             Screen = new ScreenAbstractor();
@@ -412,7 +345,7 @@ namespace Breeze.Screens
                 }
             }
 
-            ProcessDynamicAssets();
+            UpdateAllAssets();
             var tba = AllAssets.OfType<TextboxAsset>().Where(t => t.EditMode);
             if (HandleButtons || !tba.Any())
             {
@@ -476,8 +409,6 @@ namespace Breeze.Screens
                             }
                         }
                     }
-
-
 
                     if (ActiveButton != null)
                     {
@@ -588,6 +519,13 @@ namespace Breeze.Screens
 
                 tActiveButton.EditMode = true;
             }
+
+            if (ActiveButton is InteractiveAsset interactiveAsset)
+            {
+                args.Sender = interactiveAsset;
+                interactiveAsset.FireEvent(interactiveAsset.OnClickEvent, new object[] { args });
+            }
+
         }
 
 
@@ -711,16 +649,8 @@ namespace Breeze.Screens
             {
                 Solids.Instance.SpriteBatch.Scissor = asset.Clip.ToRectangle();
 
-                //if (asset is DataboundContainterAsset containterAsset)
-                //{
-                //    containterAsset.SetChildrenOriginToMyOrigin();
-                //}
+                asset.Draw(ScreenResources, Solids.Instance.SpriteBatch, Screen, opacity, asset.Clip, preDrawTexture);
 
-                asset.Draw(Solids.Instance.SpriteBatch, Screen, opacity, asset.Clip, preDrawTexture);
-                //if (asset is DataboundContainterAsset)
-                //{
-                //   DrawAssets(((DataboundContainterAsset)asset).Items.Value.Select(x=> (ScreenAsset)x).ToList(), opacity,preDrawTexture);
-                //}
             }
         }
 

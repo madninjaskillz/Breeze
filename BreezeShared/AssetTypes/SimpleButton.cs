@@ -6,6 +6,7 @@ using Breeze.AssetTypes.DataBoundTypes;
 using Breeze.AssetTypes.XMLClass;
 using Breeze.FontSystem;
 using Breeze.Helpers;
+using Breeze.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,7 +16,7 @@ namespace Breeze.AssetTypes
     {
         public ButtonAsset() { }
 
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             if (this.Children.Value == null || this.Children.Value.Count == 0)
             {
@@ -30,16 +31,16 @@ namespace Breeze.AssetTypes
             DataboundAsset select = this.Children.Value.First();
 
             if (this.State.Value == ButtonState.Hover && this.Children.Value.Count > 1) select = this.Children.Value[1];
-            if (this.State.Value == ButtonState.Pressing && this.Children.Value.Count > 1) select = this.Children.Value[2];
+            if (this.State.Value == ButtonState.Pressing && this.Children.Value.Count > 2) select = this.Children.Value[2];
 
             select.IsHidden.Value = false;
 
             SetChildrenOriginToMyOrigin();
-        }
 
-        public override void LoadFromXml(XmlAttributeCollection childNodeAttributes)
-        {
-            if (childNodeAttributes.GetNamedItem("Position")?.Value != null) Position = UIElement.GetDBValue<FloatRectangle>(childNodeAttributes.GetNamedItem("Position")?.Value);
+            if (this.ActualSize == Vector2.Zero)
+            {
+                this.ActualSize = this.Children.Value.First().ActualSize;
+            }
         }
     }
 }

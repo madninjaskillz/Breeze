@@ -17,6 +17,8 @@ namespace Breeze.AssetTypes
         public Vector2 ClickPosition { get; set; }
         public ButtonAsset ButtonAsset { get; set; }
 
+        public object Sender { get; set; }
+
     }
     public enum ClickSource
     {
@@ -25,7 +27,7 @@ namespace Breeze.AssetTypes
         Mouse,
         TouchScreen
     }
-    public class ButtonHelpers : KeyedAsset
+    public class ButtonHelpers : DataboundAsset
     {
         public MDL2Symbols? Symbol { get; set; }
         public bool Enabled { get; set; } = true;
@@ -295,7 +297,7 @@ namespace Breeze.AssetTypes
 
         public ButtonVisualDescriptor Disabled { get; set; }
 
-        List<ScreenAsset> assetscache = new List<ScreenAsset>();
+        List<DataboundAsset> assetscache = new List<DataboundAsset>();
         private string assetscachekey = "";
 
         //public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)

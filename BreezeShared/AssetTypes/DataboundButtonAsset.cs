@@ -202,7 +202,7 @@ namespace Breeze.AssetTypes
 
 
 
-        public override void Draw(SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
+        public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
             FloatRectangle? tclip = screen.Translate(clip);
             FloatRectangle possy = ActualPosition;//.Clamp(clip);
@@ -298,7 +298,7 @@ namespace Breeze.AssetTypes
             foreach (DataboundAsset screenAsset in assets)
             {
 
-                screenAsset.Draw(spriteBatch, screen, opacity, clip, bgTexture);
+                screenAsset.Draw(screenResources, spriteBatch, screen, opacity, clip, bgTexture);
             }
         }
     }
