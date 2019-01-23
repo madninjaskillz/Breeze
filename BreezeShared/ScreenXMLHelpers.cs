@@ -18,8 +18,6 @@ namespace Breeze
             List<DataboundAsset> results = new List<DataboundAsset>();
             List<Type> types = ReflectionHelpers.TypesImplementingInterface(typeof(DataboundAsset)).ToList();
 
-            Debug.WriteLine(node);
-
             foreach (XmlNode childNode in node.ChildNodes)
             {
                 Type type = types.FirstOrDefault(t => t.Name == childNode.Name);

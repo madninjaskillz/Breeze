@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 
@@ -130,9 +131,15 @@ namespace Breeze.Services.InputService
 
         public enum PressType
         {
+            [Description("Single trigger upon press")]
             Press,
+            [Description("Single trigger upon release")]
             Released,
+            [Description("Short delay then constant fire")]
             Holding,
+            [Description("Instant fire upon press then short delay then constant fire")]
+            PressThenHolding,
+            [Description("Long delay then constant fire")]
             LongHolding,
             LongHoldingRepeat,
             HoldingTriggered,
@@ -140,7 +147,6 @@ namespace Breeze.Services.InputService
             LongTapped,
             NotPressed,
             Held
-
         }
 
 

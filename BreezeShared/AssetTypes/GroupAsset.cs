@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Breeze.AssetTypes
 {
-    public class ListAsset : DataboundContainterAsset
+    public class GroupAsset : DataboundContainterAsset
     {
         public DataboundValue<string> Template { get; set; } = new DataboundValue<string>(); //todo constrain to DataboundTemplate
 
@@ -31,9 +31,10 @@ namespace Breeze.AssetTypes
 
             if (previousHash != hash)
             {
+
+                this.Children.Value = new List<DataboundAsset>();
                 if (items != null)
                 {
-                    this.Children.Value = new List<DataboundAsset>();
                     foreach (VirtualizedDataContext dataContext in items)
                     {
                         var newItem = screenResources.GetTemplate(Template.Value());
@@ -42,45 +43,13 @@ namespace Breeze.AssetTypes
 
                         this.Children.Value.Add(newItem);
                     }
-
-                    this.FixParentChildRelationship();
-                    this.FixBinds();
                 }
 
+                this.FixParentChildRelationship();
+                this.FixBinds();
                 previousHash = hash;
             }
 
-            float pos = 0;
-
-            foreach (DataboundAsset item in Children.Value)
-            {
-                if (item.Margin != null && item.Margin.Value != null)
-                {
-                    pos = pos + item.Margin.Value.Top;
-                }
-
-
-                float height = item.Position.Value.Height;
-                if (item.ActualSize.Y > 0)
-                {
-                    height = item.ActualSize.Y;
-                }
-
-                float lm = 0;
-                float bm = 0;
-
-                if (item.Margin != null && item.Margin.Value != null)
-                {
-                    lm = item.Margin.Value.Left;
-                    bm = item.Margin.Value.Bottom;
-                }
-
-                item.Position.Value = new FloatRectangle(lm, pos, item.Position.Value.Width, item.Position.Value.Height);
-
-                pos = pos + height + bm;
-            }
-
-            this.ActualSize = new Vector2(this.Position.Value.Width, pos - this.Position.ToVector2().Y);
 
             SetChildrenOriginToMyOrigin();
 

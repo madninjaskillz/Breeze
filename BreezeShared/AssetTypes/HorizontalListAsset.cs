@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Breeze.AssetTypes
 {
-    public class ListAsset : DataboundContainterAsset
+    public class HorizontalListAsset : DataboundContainterAsset
     {
         public DataboundValue<string> Template { get; set; } = new DataboundValue<string>(); //todo constrain to DataboundTemplate
 
@@ -31,22 +31,19 @@ namespace Breeze.AssetTypes
 
             if (previousHash != hash)
             {
-                if (items != null)
+
+                this.Children.Value = new List<DataboundAsset>();
+                foreach (VirtualizedDataContext dataContext in items)
                 {
-                    this.Children.Value = new List<DataboundAsset>();
-                    foreach (VirtualizedDataContext dataContext in items)
-                    {
-                        var newItem = screenResources.GetTemplate(Template.Value());
-                        newItem.VirtualizedDataContext = dataContext;
-                        newItem.ParentAsset = this;
+                    var newItem = screenResources.GetTemplate(Template.Value());
+                    newItem.VirtualizedDataContext = dataContext;
+                    newItem.ParentAsset = this;
 
-                        this.Children.Value.Add(newItem);
-                    }
-
-                    this.FixParentChildRelationship();
-                    this.FixBinds();
+                    this.Children.Value.Add(newItem);
                 }
 
+                this.FixParentChildRelationship();
+                this.FixBinds();
                 previousHash = hash;
             }
 
@@ -60,24 +57,25 @@ namespace Breeze.AssetTypes
                 }
 
 
-                float height = item.Position.Value.Height;
+                float width = item.Position.Value.Width;
                 if (item.ActualSize.Y > 0)
                 {
-                    height = item.ActualSize.Y;
+                    width = item.ActualSize.X;
                 }
 
                 float lm = 0;
                 float bm = 0;
-
+                float rm = 0;
                 if (item.Margin != null && item.Margin.Value != null)
                 {
                     lm = item.Margin.Value.Left;
                     bm = item.Margin.Value.Bottom;
+                    rm = item.Margin.Value.Right;
                 }
 
-                item.Position.Value = new FloatRectangle(lm, pos, item.Position.Value.Width, item.Position.Value.Height);
+                item.Position.Value = new FloatRectangle(lm+pos,0, item.Position.Value.Width, item.Position.Value.Height);
 
-                pos = pos + height + bm;
+                pos = pos + width + rm;
             }
 
             this.ActualSize = new Vector2(this.Position.Value.Width, pos - this.Position.ToVector2().Y);

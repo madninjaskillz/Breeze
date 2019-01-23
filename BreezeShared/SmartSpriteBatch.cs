@@ -397,7 +397,53 @@ namespace Breeze
                     }
                 }
 
-                
+
+                this.DrawUserPrimitives(PrimitiveType.LineList, vertices.ToArray(), 0, vertices.Count / 2);
+            }
+        }
+
+        public void DrawLine(Vector2[] points, Color fromColor, Color toColor, FloatRectangle? clip = null, float brushSize = 1)
+        {
+            //using (new BenchMark())
+            {
+                Vector2[] sanityPoints = new Vector2[points.Length];
+
+                for (int i = 0; i < points.Length; i++)
+                {
+                    sanityPoints[i] = points[i].Clip(clip);
+                }
+
+                Color color = fromColor;
+
+                List<VertexPositionColor> vertices = new List<VertexPositionColor>();
+
+                for (int i = 0; i < points.Length - 1; i = i + 1)
+                {
+                    color = Color.Lerp(fromColor, toColor, i / (float) points.Length);
+
+                    Vector2 start = sanityPoints[i];
+                    Vector2 end = sanityPoints[i + 1];
+                    {
+                        if (brushSize == 1)
+                        {
+                            vertices.Add(new VertexPositionColor(new Vector3(start.X, start.Y, 0), color));
+                            vertices.Add(new VertexPositionColor(new Vector3(end.X, end.Y, 0), color));
+                        }
+                        else
+                        {
+                            for (float y = -(brushSize / 2); y < (brushSize / 2); y++)
+                            {
+                                for (float x = -(brushSize / 2); x < (brushSize / 2); x++)
+                                {
+                                    vertices.Add(new VertexPositionColor(new Vector3(start.X + x, start.Y + y, 0), color));
+                                    vertices.Add(new VertexPositionColor(new Vector3(end.X + x, end.Y + y, 0), color));
+                                }
+                            }
+                        }
+                    }
+                }
+
+
                 this.DrawUserPrimitives(PrimitiveType.LineList, vertices.ToArray(), 0, vertices.Count / 2);
             }
         }

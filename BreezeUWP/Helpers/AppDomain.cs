@@ -23,6 +23,11 @@ namespace Breeze.Helpers
             return GetAssemblyList().ToArray();
         }
 
+        public List<string> AssembliesToNotLoad = new List<string>
+        {
+            "clrcompression.dll","clrjit.dll"
+        };
+
         private IEnumerable<Assembly> GetAssemblyList()
         {
             var folder = FileLocation.InstalledLocation;
@@ -30,17 +35,21 @@ namespace Breeze.Helpers
             List<Assembly> assemblies = new List<Assembly>();
             foreach (var file in Directory.GetFiles(folder))
             {
-                if (file.Split('.').Last()== "dll" || file.Split('.').Last() == "exe")
+                if (!AssembliesToNotLoad.Contains(file.Split('\\').Last()))
                 {
-                    AssemblyName name = new AssemblyName() { Name = Path.GetFileNameWithoutExtension(file.Split('\\').Last()) };
-                    try
+                    if (file.Split('.').Last() == "dll" || file.Split('.').Last() == "exe")
                     {
-                        Assembly asm = Assembly.Load(name);
-                        assemblies.Add(asm);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine($"Couldnt load {name} - {e.Message}");
+                        AssemblyName name = new AssemblyName()
+                            {Name = Path.GetFileNameWithoutExtension(file.Split('\\').Last())};
+                        try
+                        {
+                            Assembly asm = Assembly.Load(name);
+                            assemblies.Add(asm);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine($"Couldnt load {name} - {e.Message}");
+                        }
                     }
                 }
             }

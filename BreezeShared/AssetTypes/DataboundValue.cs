@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using Breeze.AssetTypes.XMLClass;
+using Breeze.Helpers;
 
 namespace Breeze
 {
@@ -74,11 +75,14 @@ namespace Breeze.AssetTypes.DataBoundTypes
 
                 set
                 {
-                    if (!string.IsNullOrWhiteSpace(BoundTo))
+                    if (this.BoundTo != null && this.BindingDirection == BindType.TwoWay)
                     {
-                        Debug.WriteLine(BoundTo);
-                    }
+                        Debug.WriteLine("reverse bind");
+                        this.ParentAsset.VirtualizedDataContext.Store[this.BoundTo] = value;
 
+                        Breeze.VirtualizedDataContext vc = this.ParentAsset.VirtualizedDataContext;
+                        vc.SetPropValue(this.BoundTo, value);
+                    }
                     if (this.value == null && value == null)
                     {
                         return;

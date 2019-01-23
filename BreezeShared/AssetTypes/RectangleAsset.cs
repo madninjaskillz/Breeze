@@ -32,7 +32,6 @@ namespace Breeze.AssetTypes
             FillTexture.Value = fillTexture;
             BackgroundColor.Value = backgroundColor ?? Color.White;
             TilingMode.Value = tileMode;
-         //   FillTexture2D.Value = Solids.AssetLibrary.GetTexture(FillTexture.Value);
             BlurAmount.Value = blurAmout;
 
         }
@@ -58,6 +57,7 @@ namespace Breeze.AssetTypes
 
             clip = screen.Translate(clip);
 
+            var t = Position.Value();
 
             FloatRectangle tmp = screen.Translate(ActualPosition.AdjustForMargin(Margin)).Value;
 
@@ -70,31 +70,31 @@ namespace Breeze.AssetTypes
                 }
             }
 
-            if (BlurAmount.Value > 0)
+            if (BlurAmount.Value() > 0)
             {
-                Solids.GaussianBlur.DoBlur(bgTexture, BlurAmount.Value, (BackgroundColor.Value.Value * opacity) * ((BlurAmount.Value / Solids.MaxBlur)), tmp.ToRectangle, ScissorRect, clip, NoisePerc.Value);
+                Solids.GaussianBlur.DoBlur(bgTexture, BlurAmount.Value(), (BackgroundColor.Value().Value * opacity) * ((BlurAmount.Value() / Solids.MaxBlur)), tmp.ToRectangle, ScissorRect, clip, NoisePerc.Value());
             }
 
-            if (BackgroundColor.Value.HasValue && FillTexture.Value == null)
+            if (BackgroundColor.Value().HasValue && FillTexture.Value() == null)
             {
-                spriteBatch.DrawSolidRectangle(tmp, BackgroundColor.Value.Value * opacity, clip);
+                spriteBatch.DrawSolidRectangle(tmp, BackgroundColor.Value().Value * opacity, clip);
             }
 
-            if (FillTexture.Value != null)
+            if (FillTexture.Value() != null)
             {
                 using (new SmartSpriteBatchManager(Solids.Instance.SpriteBatch))
                 {
-                    spriteBatch.DrawTexturedRectangle(tmp, BackgroundColor.Value.Value * opacity, Solids.Instance.AssetLibrary.GetTexture(FillTexture.Value), TilingMode.Value, clip);
+                    spriteBatch.DrawTexturedRectangle(tmp, BackgroundColor.Value().Value * opacity, Solids.Instance.AssetLibrary.GetTexture(FillTexture.Value()), TilingMode.Value, clip);
                 }
             }
 
-            if (BrushSize.Value > 0)
+            if (BrushSize.Value() > 0)
             {
 
-                spriteBatch.DrawBorder(tmp, BorderColor.Value * opacity, BrushSize.Value, clip);
+                spriteBatch.DrawBorder(tmp, BorderColor.Value() * opacity, BrushSize.Value(), clip);
             }
 
-            this.ActualSize = new Vector2(Position.Value.Width, Position.Value.Height).PadForMargin(Margin);
+            this.ActualSize = new Vector2(Position.Value().Width, Position.Value().Height).PadForMargin(Margin);
 
             SetChildrenOriginToMyOrigin();
         }

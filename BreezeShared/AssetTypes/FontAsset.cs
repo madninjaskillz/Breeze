@@ -102,10 +102,10 @@ namespace Breeze.AssetTypes
 
             if (FontName.Value != null)
             {
-                this.ActualSize = DrawFontAsset(spriteBatch, screen, opacity, txt, FontColor.Value,
-                    ActualPosition, FontSize.Value, LineHeight.Value, FontName.Value, PseudoAntiAlias.Value, WordWrap.Value,
-                    Justification.Value, FontMargin.Value, Margin.Value, OutlineColor.Value, Clip, bgTexture, scrollOffset, CaretPos.Value,
-                    MultiLine.Value, ScissorRect);
+                this.ActualSize = DrawFontAsset(spriteBatch, screen, opacity, txt, FontColor.Value(),
+                    ActualPosition, FontSize.Value(), LineHeight.Value(), FontName.Value(), PseudoAntiAlias.Value(), WordWrap.Value(),
+                    Justification.Value(), FontMargin.Value(), Margin.Value(), OutlineColor.Value(), Clip, bgTexture, scrollOffset, CaretPos.Value(),
+                    MultiLine.Value(), ScissorRect);
             }
 
 

@@ -32,6 +32,7 @@ namespace Breeze.Services.InputService
         private BreezeInputState oldState = new BreezeInputState();
         private BreezeInputState newState = new BreezeInputState();
         public Vector2 MousePosition { get; set; } = Vector2.Zero;
+        public Vector2 PreviousMousePosition { get; set; } = Vector2.Zero;
         public Vector2 MouseScreenPosition { get; set; } = Vector2.Zero;
         public List<char> PressedChars { get; set; }
 
@@ -122,6 +123,13 @@ namespace Breeze.Services.InputService
            // newState = new BreezeInputState();
             newState.UpdateState();
             MousePosition = newState.MousePosition;
+            if (MousePosition != PreviousMousePosition)
+            {
+                MouseActive = true;
+            }
+
+            PreviousMousePosition = MousePosition;
+
             MouseScreenPosition = new Vector2(newState.MousePosition.X / Solids.Instance.SpriteBatch.GraphicsDevice.Viewport.Bounds.Width, newState.MousePosition.Y / Solids.Instance.SpriteBatch.GraphicsDevice.Viewport.Bounds.Height);
 
             bool? mba = newState.ShouldMouseBeActive();
@@ -162,6 +170,7 @@ namespace Breeze.Services.InputService
             {
                 holdCounter.Add("GPB_" + justPressedKey.ToString(), 0);
                 CurrentStack.Inputs.Add(new GamepadControl(justPressedKey, PressType.Press));
+                CurrentStack.Inputs.Add(new GamepadControl(justPressedKey, PressType.PressThenHolding));
             }
 
             foreach (Buttons heldKey in heldButtons)
@@ -188,6 +197,7 @@ namespace Breeze.Services.InputService
                 if (holdCounter["GPB_" + heldKey.ToString()] > SHORTHOLD)
                 {
                     CurrentStack.Inputs.Add(new GamepadControl(heldKey, PressType.Holding));
+                    CurrentStack.Inputs.Add(new GamepadControl(heldKey, PressType.PressThenHolding));
                 }
 
             }
@@ -249,6 +259,7 @@ namespace Breeze.Services.InputService
             {
                 holdCounter.Add("MB_" + justPressedKey.ToString(), 0);
                 CurrentStack.Inputs.Add(new MouseControl(justPressedKey, PressType.Press));
+                CurrentStack.Inputs.Add(new MouseControl(justPressedKey, PressType.PressThenHolding));
                 MouseActive = true;
             }
 
@@ -279,6 +290,7 @@ namespace Breeze.Services.InputService
                     if (holdCounter["MB_" + heldKey.ToString()] > SHORTHOLD)
                     {
                         CurrentStack.Inputs.Add(new MouseControl(heldKey, PressType.Holding));
+                        CurrentStack.Inputs.Add(new MouseControl(heldKey, PressType.PressThenHolding));
                     }
                 }
 
@@ -286,6 +298,7 @@ namespace Breeze.Services.InputService
 
             foreach (MouseButtons justReleasedKey in justReleasedMouseButtons)
             {
+                Console.WriteLine(holdCounter["MB_" + justReleasedKey.ToString()]);
                 if (holdCounter["MB_" + justReleasedKey.ToString()] < SHORTHOLD)
                 {
                     CurrentStack.Inputs.Add(new MouseControl(justReleasedKey, PressType.Tap));

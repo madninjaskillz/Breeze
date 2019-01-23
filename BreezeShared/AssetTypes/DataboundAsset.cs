@@ -86,8 +86,19 @@ namespace Breeze.AssetTypes.DataBoundTypes
                 XMLName = xmlName;
             }
         }
-        
 
+
+        public bool IsHiddenOrParentHidden()
+        {
+            var isHidden = IsHidden.Value();
+
+            if (!isHidden && ParentAsset!=null)
+            {
+                isHidden = ParentAsset.IsHiddenOrParentHidden();
+            }
+
+            return isHidden;
+        }
         public DataboundValue<bool> IsHidden { get; set; } = new DataboundValue<bool>();
         public string Key { get; set; }
         public int ZIndex { get; set; } = 0;
@@ -115,10 +126,10 @@ namespace Breeze.AssetTypes.DataBoundTypes
             {
                 if (ParentPosition == null)
                 {
-                    return Position.Value;
+                    return Position.Value();
                 }
 
-                return Position.Value.ConstrainTo(ParentPosition.Value);
+                return Position.Value().ConstrainTo(ParentPosition.Value);
             }
         }
 
@@ -194,6 +205,7 @@ namespace Breeze.AssetTypes.DataBoundTypes
         {
             public DataboundAsset ParentAsset;
             public string BoundTo { get; set; } = null;
+            public bool Invert { get; set; } = false;
             public BindType BindingDirection { get; set; } = BindType.OneWay;
 
             [XmlIgnore]
@@ -242,22 +254,16 @@ namespace Breeze.AssetTypes.DataBoundTypes
                     }
                 }
             }
-
-            Debug.WriteLine(this);
-        }
+            }
 
         public static DataboundAsset CreateFromXml(XmlAttributeCollection childNodeAttributes, Type type, DataboundAsset parentAsset, BaseScreen baseScreen)
         {
-            Debug.WriteLine("Type:" + type.ToString());
             DataboundAsset asset = (DataboundAsset)Activator.CreateInstance(type);
 
             var assetType = asset.GetType();
 
             PropertyInfo[] tprops = assetType.GetProperties();
-            foreach (PropertyInfo propertyInfo in tprops)
-            {
-                Debug.WriteLine(propertyInfo.GetMethod.ReturnType.AssemblyQualifiedName.Contains("DataboundValue"));
-            }
+            
             PropertyInfo[] props = tprops.Where(propertyInfo => propertyInfo.GetMethod.ReturnType.AssemblyQualifiedName.Contains("DataboundValue")).ToArray();
             
             List<string> childNodeNames = new List<string>();
@@ -330,8 +336,6 @@ namespace Breeze.AssetTypes.DataBoundTypes
                 asset.VirtualizedDataContext = embeddedDataContext;
                 asset.VirtualizedDataContext.Screen = baseScreen;
             }
-
-            Debug.WriteLine(asset);
 
             return asset;
         }

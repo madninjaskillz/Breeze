@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Breeze.AssetTypes.DataBoundTypes;
@@ -30,6 +31,8 @@ namespace Breeze
 
         public T GetValue<T>(DataboundAsset.DataboundValue<T> dbValue)
         {
+            bool invert = false;
+
             if (dbValue == null)
             {
                 return default(T);
@@ -37,13 +40,33 @@ namespace Breeze
 
             if (!string.IsNullOrWhiteSpace(dbValue.BoundTo))
             {
+                string boundTo = dbValue.BoundTo;
+                
+                if (dbValue.Invert)
+                {
+                    invert = true;
+                }
 
-                if (!Store.ContainsKey(dbValue.BoundTo))
+                if (!Store.ContainsKey(boundTo))
                 {
                     return default(T);
                 }
 
-                object val = Store[dbValue.BoundTo];
+                object val = Store[boundTo];
+
+                if (invert)
+                {
+                    Type typeParameterType = val.GetType();
+                    if (typeParameterType == typeof(bool))
+                    {
+                        val = !(bool) val;
+                    }
+                }
+
+                if (typeof(T) == typeof(string))
+                {
+                    return (T) ((object)(val.ToString()));
+                }
 
                 return (T)val;
             }

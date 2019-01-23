@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 using Breeze.AssetTypes.DataBoundTypes;
 using Breeze.AssetTypes.XMLClass;
@@ -16,7 +17,7 @@ namespace Breeze.AssetTypes
         {
             float pos = 0;
 
-            foreach (DataboundAsset item in Children.Value)
+            foreach (DataboundAsset item in Children.Value.Where(x=>!x.IsHiddenOrParentHidden()))
             {
                 if (item.Margin != null && item.Margin.Value != null)
                 {

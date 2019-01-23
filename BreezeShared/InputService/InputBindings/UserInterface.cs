@@ -60,6 +60,11 @@ namespace Breeze.Services.InputService
                 new InputService.InputStack(new InputService.KeyboardControl(Keys.Enter, InputService.PressType.Press))
             );
 
+            public static InputService.InputBinding ButtonHeld => new InputService.InputBinding
+            (
+                new InputService.InputStack(new InputService.MouseControl(InputService.MouseButtons.LeftClick, InputService.PressType.Held))
+            );
+
             public static InputService.InputBinding ButtonUp=> new InputService.InputBinding
             (
                 new InputService.InputStack(new InputService.MouseControl(InputService.MouseButtons.LeftClick, InputService.PressType.Released)),

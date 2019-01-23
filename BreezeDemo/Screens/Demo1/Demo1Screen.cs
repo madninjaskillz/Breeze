@@ -18,8 +18,8 @@ namespace BreezeDemo.Screens.Demo1
         {
             await base.Initialise();
             LoadXAML();
-            
-            
+
+
             this.RootAsset.FixBinds();
             vm = new Demo1VirtualizedContext();
             this.RootContext = vm;
@@ -27,8 +27,8 @@ namespace BreezeDemo.Screens.Demo1
             this.IsFullScreen = true;
             UpdateAllAssets();
             Update(new GameTime());
-          //  SetBindings();
-        
+            //  SetBindings();
+
         }
 
         public void TestButtonClick(ButtonClickEventArgs args)

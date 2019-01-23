@@ -12,6 +12,7 @@ namespace Breeze.Helpers
         public static Vector2[] GetBezierApproximation(Vector2[] controlPoints, int outputSegmentCount)
         {
             
+            if (controlPoints.Length==4)
             {
                 Vector2[] points = new Vector2[outputSegmentCount + 1];
                 for (int i = 0; i <= outputSegmentCount; i++)
@@ -21,6 +22,10 @@ namespace Breeze.Helpers
                 }
 
                 return points;
+            }
+            else
+            {
+                return new Vector2[0];
             }
         }
 

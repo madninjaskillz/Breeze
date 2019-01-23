@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Breeze.Helpers;
 using Breeze.Screens;
 using Microsoft.Xna.Framework;
@@ -20,7 +21,15 @@ namespace Breeze.AssetTypes.DataBoundTypes
 
                 if (args.Any(x => x.Key == "boundto"))
                 {
-                    result.BoundTo = args.First(x => x.Key == "boundto").Value;
+                    string v = args.First(x => x.Key == "boundto").Value;
+                 
+                    result.BoundTo = v;
+                }
+
+
+                if (args.Any(x => x.Key.ToLower() == "invert"))
+                {
+                    result.Invert = bool.Parse(args.First(x => x.Key.ToLower() == "invert").Value);
                 }
 
                 if (args.Any(x => x.Key == "bindingdirection"))
@@ -60,7 +69,14 @@ namespace Breeze.AssetTypes.DataBoundTypes
 
                 if (args.Any(x => x.Key.ToLower() == "boundto"))
                 {
-                    result.BoundTo = args.First(x => x.Key == "boundto").Value;
+                    string v = args.First(x => x.Key == "boundto").Value;
+                    
+                    result.BoundTo = v;
+                }
+
+                if (args.Any(x => x.Key.ToLower() == "invert"))
+                {
+                    result.Invert = bool.Parse(args.First(x => x.Key.ToLower() == "invert").Value);
                 }
 
                 if (args.Any(x => x.Key.ToLower() == "bindingdirection"))
@@ -248,6 +264,11 @@ namespace Breeze.AssetTypes.DataBoundTypes
 
             }
 
+            
+            if (type.GetTypeInfo().IsEnum)
+            {
+                return Enum.Parse(type, input);
+            }
 
             return Convert.ChangeType(input, type);
 
@@ -282,7 +303,7 @@ namespace Breeze.AssetTypes.DataBoundTypes
                 return false;
             }
 
-            return dbValue.Value != null;
+            return dbValue.Value() != null;
         }
 
         public static T GetVirtualizedValue<T>(this DataboundAsset.DataboundValue<T> dbValue)
@@ -301,6 +322,11 @@ namespace Breeze.AssetTypes.DataBoundTypes
             if (dbValue.ParentAsset == null)
             {
                 return default(T);
+            }
+
+            if (dbValue.Value != null && dbValue.BoundTo == null)
+            {
+                return dbValue.Value;
             }
 
             return dbValue.ParentAsset.GetVirtualizedValue(dbValue);

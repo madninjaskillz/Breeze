@@ -14,8 +14,9 @@ namespace Breeze.AssetTypes
     {
         private Vector2[] approxPoints;
         public DataboundValue<Color> Color { get; set; } = new DataboundValue<Color>();
-        
-        public DataboundValue<Vector2[]> Points { get; set; } = new DataboundValue<Vector2[]>();
+        public DataboundValue<Color> ToColor { get; set; } = new DataboundValue<Color>();
+
+        public DataboundValue<List<Vector2>> Points { get; set; } = new DataboundValue<List<Vector2>>();
 
         public DataboundValue<int> BrushSize { get; set; } = new DataboundValue<int>(1);
 
@@ -23,7 +24,7 @@ namespace Breeze.AssetTypes
         {
         }
 
-        public BezierLineAsset(Color color, Vector2[] points, int brushSize = 1)
+        public BezierLineAsset(Color color, List<Vector2> points, int brushSize = 1)
         {
             Color.Value = color;
             Points.Value = points;
@@ -35,18 +36,36 @@ namespace Breeze.AssetTypes
 
         public override void Draw(BaseScreen.Resources screenResources, SmartSpriteBatch spriteBatch, ScreenAbstractor screen, float opacity, FloatRectangle? clip = null, Texture2D bgTexture = null, Vector2? scrollOffset = null)
         {
-            spriteBatch.DrawLine(approxPoints.Select(screen.Translate).ToArray(), Color.Value, null, BrushSize.Value);
+            //    if (approxPoints == null)
+
+            if (Points == null || Points.Value() == null)
+            {
+                return;
+            }
+
+            SetPoints(Points.Value());
+
+            var drawPoints = approxPoints.Select(screen.Translate).ToArray();
+
+            if (ToColor.HasValue())
+            {
+                spriteBatch.DrawLine(drawPoints, Color.Value(), ToColor.Value(), null, BrushSize.Value);
+            }
+            else
+            {
+                spriteBatch.DrawLine(drawPoints, Color.Value(), null, BrushSize.Value);
+            }
         }
 
         private void OnPointsChange()
         {
-            SetPoints(Points.Value);
+            SetPoints(Points.Value());
         }
-        private void SetPoints(Vector2[] controlPoints)
+        private void SetPoints(List<Vector2> controlPoints)
         {
-            approxPoints = BezierHelper.GetBezierApproximation(controlPoints, 12);
+            approxPoints = BezierHelper.GetBezierApproximation(controlPoints.ToArray(), 64);
         }
     }
 
-    
+
 }

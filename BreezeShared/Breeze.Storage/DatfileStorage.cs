@@ -112,7 +112,7 @@ namespace Breeze.Storage
 
         public Stream GetStream(string path)
         {
-            Debug.WriteLine("Loading Stream: "+path);
+            
             if (path.StartsWith("\\")) path = path.Substring(1);
             FileEntry entry = TabletOfContents.First(t => t.FullPath.ToLower() == path.ToLower());
             byte[] result = new byte[entry.Length];

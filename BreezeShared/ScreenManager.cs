@@ -279,6 +279,16 @@ namespace Breeze
             //    }
             //}
 
+            public T AddViewWithoutDuplicationCheck<T>() where T : BaseScreen, new()
+            {
+                    T screen = new T();
+                    ((T)screen).Initialise();
+                    screenManager.Add(screen);
+                    screenManager.BringToFront(screen);
+
+                    return screen; 
+            }
+
             public T AddView<T>() where T : BaseScreen, new()
             {
                 if (screenManager.screens.All(t => (t as T) == null))

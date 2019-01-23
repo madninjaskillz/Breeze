@@ -16,6 +16,7 @@ namespace Breeze.FontSystem
     }
     public enum MDL2Symbols
     {
+        MenuMore = '\uE26B',
         Caret = '\uE933',
         Tape = '\uE96A',
         TickBox = 61804 ,

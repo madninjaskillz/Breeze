@@ -103,6 +103,8 @@ namespace Breeze
         public float Bottom => Y + Height;
         public Rectangle ToRectangle => new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
         public Vector2 ToVector2 => new Vector2(X, Y);
+        public Vector2 Centre => new Vector2(X + (Width / 2f), Y + (Height / 2f));
+
         public FloatRectangle(float x, float y, float width, float height, bool boundless = false)
         {
             this.X = x;

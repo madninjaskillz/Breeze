@@ -22,6 +22,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundButtonAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\FontAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\DataboundValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\GroupAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\HorizontalListAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\HorizontalSliderAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ImageAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\InteractiveAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\ListAsset.cs" />
@@ -37,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\StaticTemplates\TextBox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\TemplateAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\TextBoxAsset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\VerticalSliderAsset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\VirtualizedDataContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\XmlClasses.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssetTypes\XMLClass\Base.cs" />
@@ -50,6 +54,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\Helpers\FileNameHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Breeze.Storage\Helpers\GaussianBlur.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DebugSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BezierHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\EnumExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SpriteBatchHelpers.cs" />
@@ -80,9 +85,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)BreezeInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScreenAbstractor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScreenManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Screens\DialogScreen.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Screens\IScreen.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Screens\MGUIViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScreenXMLHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SmartSpriteBatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Solids.cs" />

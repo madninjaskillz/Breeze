@@ -15,6 +15,8 @@ using Breeze.Shared.AssetTypes;
 using Force.DeepCloner;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using ButtonState = Breeze.AssetTypes.ButtonState;
 
 namespace Breeze.Screens
 {
@@ -53,7 +55,8 @@ namespace Breeze.Screens
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(xml);
 
-                return ScreenXMLHelpers.HandleChildren(this, xmlDoc).First();
+                var fing = ScreenXMLHelpers.HandleChildren(this, xmlDoc);
+                return fing.First();
             }
         }
 
@@ -87,7 +90,6 @@ namespace Breeze.Screens
         {
             Type type = this.GetType();
 
-            Debug.WriteLine(type);
             string path = "Screens\\" + type.Name.Substring(0, type.Name.Length - ("Screen").Length) + "\\" + type.Name + ".xml";
 
             string xmlTest = Solids.Instance.Storage.FileSystemStorage.ReadText(path);
@@ -110,8 +112,6 @@ namespace Breeze.Screens
             {
                 FixChildParentRelationShips(databoundAsset);
             }
-
-            Debug.WriteLine(FixedAssets);
         }
 
         public void FixChildParentRelationShips(DataboundAsset asset)
@@ -127,7 +127,7 @@ namespace Breeze.Screens
                 }
             }
         }
-        
+
         public class InputBindingEvents
         {
             internal Dictionary<InputService.InputBinding, List<Action>> inputBindingEvents = new Dictionary<InputService.InputBinding, List<Action>>();
@@ -155,7 +155,6 @@ namespace Breeze.Screens
 
         internal void StartWindowDrag(ButtonClickEventArgs args)
         {
-            Debug.WriteLine("Oh Hai!");
             dragOffset = args.ClickPosition;
             dragging = true;
         }
@@ -163,7 +162,6 @@ namespace Breeze.Screens
 
         internal void StopWindowDrag(ButtonClickEventArgs args)
         {
-            Debug.WriteLine("Oh Hai!");
             dragOffset = null;
             dragging = false;
         }
@@ -306,7 +304,7 @@ namespace Breeze.Screens
         public List<DataboundAsset> GetAssetsAndTheirChildren(List<DataboundAsset> assets)
         {
             List<DataboundAsset> result = new List<DataboundAsset>();
-            foreach (var screenAsset in assets)
+            foreach (DataboundAsset screenAsset in assets)
             {
                 result.Add(screenAsset);
                 if (screenAsset is DataboundContainterAsset asset)
@@ -322,11 +320,25 @@ namespace Breeze.Screens
         {
             UpdateAllAssets();
         }
-        
+
         public virtual async Task Initialise()
         {
+            LoadXAML();
             Screen = new ScreenAbstractor();
             Screen.SetBounds(Solids.Instance.SpriteBatch.GraphicsDevice.Viewport.Bounds);
+
+
+        }
+
+        public void InitViewModel(VirtualizedDataContext vm)
+        {
+            this.RootAsset.FixBinds();
+
+            this.RootContext = vm;
+            this.RootContext.Screen = this;
+            this.IsFullScreen = true;
+            UpdateAllAssets();
+            Update(new GameTime());
         }
 
         public virtual void Update(GameTime gameTime)
@@ -346,10 +358,20 @@ namespace Breeze.Screens
             }
 
             UpdateAllAssets();
+
+            mouseActive = Solids.Instance.InputService.MouseActive;
+            if (mouseActive)
+            {
+                if (!AllAssets.Any(x => Solids.Instance.InputService.MouseScreenPosition.Intersects(x.ActualPosition)))
+                {
+                    ActiveButton = null;
+                }
+            }
+
             var tba = AllAssets.OfType<TextboxAsset>().Where(t => t.EditMode);
             if (HandleButtons || !tba.Any())
             {
-                mouseActive = Solids.Instance.InputService.MouseActive;
+
 
                 if (ActiveButton != null && AllAssets.Contains(ActiveButton) == false)
                 {
@@ -377,23 +399,26 @@ namespace Breeze.Screens
                         if (mouseActive)
                         {
                             bool found = false;
-                            foreach (InteractiveAsset buttonAsset in AllAssets.OfType<InteractiveAsset>())
+
+                            if (ActiveButton != null)
                             {
-                                Rectangle thing = Screen.Translate(buttonAsset.ActualPosition).ToRectangle();
-                                if (mx > thing.X && my > thing.Y && mx < thing.Right && my < thing.Bottom)
+                                Rectangle tthing = Screen.Translate(ActiveButton.ActualPosition).ToRectangle();
+                                if (mx > tthing.X && my > tthing.Y && mx < tthing.Right && my < tthing.Bottom)
                                 {
-                                    ActiveButton = buttonAsset;
                                     found = true;
                                 }
                             }
 
-                            foreach (InteractiveAsset buttonAsset in AllAssets.OfType<InteractiveAsset>())
+                            if (!found)
                             {
-                                Rectangle thing = Screen.Translate(buttonAsset.ActualPosition).ToRectangle();
-                                if (mx > thing.X && my > thing.Y && mx < thing.Right && my < thing.Bottom)
+                                foreach (InteractiveAsset buttonAsset in AllAssets.OfType<InteractiveAsset>())
                                 {
-                                    ActiveButton = buttonAsset;
-                                    found = true;
+                                    Rectangle thing = Screen.Translate(buttonAsset.ActualPosition).ToRectangle();
+                                    if (mx > thing.X && my > thing.Y && mx < thing.Right && my < thing.Bottom)
+                                    {
+                                        ActiveButton = buttonAsset;
+                                        found = true;
+                                    }
                                 }
                             }
 
@@ -414,49 +439,119 @@ namespace Breeze.Screens
                     {
                         if (HandleButtonNav)
                         {
+                            bool up = false;
+                            bool down = false;
+                            bool left = false;
+                            bool right = false;
+
+                            float angleWideness = 85;
                             if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIDown) || Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIUp) || Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UILeft) || Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIRight))
                             {
-                                Dictionary<InteractiveAsset, Vector2> buttonPositions = new Dictionary<InteractiveAsset, Vector2>();
+                                //Dictionary<InteractiveAsset, Vector2> buttonPositions = new Dictionary<InteractiveAsset, Vector2>();
+
+                                List<Vector2> activeButtonPositions = new List<Vector2>();
+
+                                List<ButtonPositionsListItem> buttonPositions = new List<ButtonPositionsListItem>();
                                 foreach (InteractiveAsset buttonAsset in AllAssets.OfType<InteractiveAsset>())
                                 {
-                                    var rect = Screen.Translate(buttonAsset.ActualPosition).ToRectangle();
+                                    Rectangle rect = Screen.Translate(buttonAsset.ActualPosition).ToRectangle();
                                     Vector2 centerPos = new Vector2(rect.X + (rect.Width / 2f), rect.Y + (rect.Width / 2f));
 
-                                    buttonPositions.Add(buttonAsset, centerPos);
+                                    //buttonPositions.Add(new ButtonPositionsListItem(buttonAsset, centerPos));
+                                    //buttonPositions.Add(new ButtonPositionsListItem(buttonAsset, new Vector2(rect.X, rect.Y)));
+                                    //buttonPositions.Add(new ButtonPositionsListItem(buttonAsset, new Vector2(rect.Right, rect.Y)));
+
+                                    //buttonPositions.Add(new ButtonPositionsListItem(buttonAsset, new Vector2(rect.X, rect.Bottom)));
+                                    //buttonPositions.Add(new ButtonPositionsListItem(buttonAsset, new Vector2(rect.Right, rect.Bottom)));
                                 }
 
-                                float direction = -(float)Math.PI;
-                                if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIRight)) direction = (-(float)Math.PI) + (float)Math.PI * 0.5f;
-                                if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIDown)) direction = (-(float)Math.PI) + (float)Math.PI;
-                                if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UILeft)) direction = (-(float)Math.PI) + (float)Math.PI * 1.5f;
+                                activeButtonPositions = buttonPositions.Where(x => x.Asset == ActiveButton).Select(x => x.Position).ToList();
 
-
-                                Dictionary<InteractiveAsset, Vector2> validButtonPositions = new Dictionary<InteractiveAsset, Vector2>();
-                                foreach (var buttonToCheck in buttonPositions.Where(t => t.Key != ActiveButton))
+                                float direction = 0;
+                                if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIUp))
                                 {
-                                    var differenceVector = (buttonPositions[ActiveButton] - buttonToCheck.Value);
-                                    float angle = differenceVector.ToAngle();
+                                    direction = -(float)Math.PI;
+                                    up = true;
+                                }
 
-                                    if (validButtonPositions.ContainsKey(buttonToCheck.Key) == false)
+                                if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIRight))
+                                {
+                                    direction = (-(float)Math.PI) + (float)Math.PI * 0.5f;
+                                    right = true;
+                                }
+
+                                if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UIDown))
+                                {
+                                    direction = (-(float)Math.PI) + (float)Math.PI;
+                                    down = true;
+                                }
+
+                                if (Solids.Instance.InputService.JustPressed(InputService.ActionKeys.UILeft))
+                                {
+                                    direction = (-(float)Math.PI) + (float)Math.PI * 1.5f;
+                                    left = true;
+                                }
+
+                                List<AssetScoring> scores = new List<AssetScoring>();
+                                foreach (InteractiveAsset buttonAsset in AllAssets.OfType<InteractiveAsset>().Where(x => x != ActiveButton))
+                                {
+                                    var differenceVector = (ActiveButton.ActualPosition.Centre - buttonAsset.ActualPosition.Centre);
+                                    float angle = differenceVector.ToAngle();
+                                    var actualDistance = Math.Abs(Vector2.Distance(ActiveButton.ActualPosition.Centre, buttonAsset.ActualPosition.Centre));
+                                    var angleDiff = direction.DifferenceBetweenAnglesInDegrees(angle);
+                                    var distance = actualDistance * (1f + (10f * Math.Abs(angleDiff)));
+
+                                    if (up || down)
                                     {
-                                        if (direction.DifferenceBetweenAnglesInDegrees(angle) > -45 && direction.DifferenceBetweenAnglesInDegrees(angle) < 45)
+                                        if (ActiveButton.ActualPosition.Centre.X >= buttonAsset.ActualPosition.X &&
+                                            ActiveButton.ActualPosition.Centre.X <= buttonAsset.ActualPosition.Right)
                                         {
-                                            validButtonPositions.Add(buttonToCheck.Key, buttonToCheck.Value);
+                                            angleDiff = 0;
                                         }
                                     }
 
+                                    int actuallyValid = 1;
+                                    if (direction.DifferenceBetweenAnglesInDegrees(angle) > -angleWideness && direction.DifferenceBetweenAnglesInDegrees(angle) < angleWideness)
+                                    {
+                                        actuallyValid = 0;
+                                    }
+
+                                    if (left || right)
+                                    {
+                                        if (ActiveButton.ActualPosition.Centre.Y >= buttonAsset.ActualPosition.Y &&
+                                            ActiveButton.ActualPosition.Centre.Y <= buttonAsset.ActualPosition.Bottom)
+                                        {
+                                            angleDiff = 0;
+                                        }
+                                    }
+
+                                    scores.Add(new AssetScoring
+                                    {
+                                        Asset = buttonAsset,
+                                        Angle = angle,
+                                        AngleDiff = angleDiff,
+                                        Distance = actualDistance,
+                                        Score = distance,
+                                        Valid = actuallyValid
+                                    });
                                 }
 
-                                InteractiveAsset bestButton = ActiveButton;
-                                float bestDistance = float.MaxValue;
-                                foreach (KeyValuePair<InteractiveAsset, Vector2> validButtonPosition in validButtonPositions)
-                                {
-                                    if (Math.Abs(Vector2.Distance(buttonPositions[ActiveButton], validButtonPosition.Value)) < bestDistance)
-                                    {
-                                        bestDistance = Math.Abs(Vector2.Distance(buttonPositions[ActiveButton], validButtonPosition.Value));
+                                List<AssetScoring> ByScore = scores.OrderBy(x => x.Score).ToList();
+                                List<AssetScoring> ByDistance = scores.OrderBy(x => x.Valid).ThenBy(x => x.Distance).ThenBy(x => x.AngleDiff).ThenBy(x => x.Asset.ActualPosition.X).ToList();
+                                List<AssetScoring> ByAngleDiff = scores.OrderBy(x => x.Valid).ThenBy(x => x.AngleDiff).ThenBy(x => x.Distance).ThenBy(x => x.Asset.ActualPosition.X).ToList();
 
-                                        bestButton = validButtonPosition.Key;
-                                    }
+                                foreach (AssetScoring assetScoring in scores)
+                                {
+                                    assetScoring.CountScore = ByDistance.IndexOf(assetScoring) + ByAngleDiff.IndexOf(assetScoring);
+                                }
+
+                                List<AssetScoring> ByCountScore = scores.OrderBy(x => x.CountScore).ToList();
+
+                                InteractiveAsset bestButton = ActiveButton;
+                                
+                                if (ByScore.Any())
+                                {
+                                    bestButton = ByCountScore.First().Asset;
                                 }
 
                                 if (bestButton != ActiveButton)
@@ -480,19 +575,53 @@ namespace Breeze.Screens
             firstUpdateComplete = true;
         }
 
+        private class AssetScoring
+        {
+            public InteractiveAsset Asset { get; set; }
+
+            public float AngleDiff { get; set; }
+            public float Distance { get; set; }
+            public float Score { get; set; }
+            public float Angle { get; set; }
+            public int CountScore { get; set; }
+            public int Valid { get; set; }
+
+            public override string ToString()
+            {
+                return $"{Asset.GetType()}, {Asset.ActualPosition.Centre} Angle:{Angle}, AD:{AngleDiff}, Dist:{Distance}, Score:{Score}, CountScore:{CountScore}";
+            }
+        }
+
+        private class ButtonPositionsListItem
+        {
+            public InteractiveAsset Asset { get; set; }
+            public Vector2 Position { get; set; }
+
+            public ButtonPositionsListItem(InteractiveAsset asset, Vector2 pos)
+            {
+                Asset = asset;
+                Position = pos;
+            }
+        }
+
+        public Action NoActiveButtonClick;
         public void HandleClick()
         {
-            if (ActiveButton == null) return;
+            if (ActiveButton == null)
+            {
+                NoActiveButtonClick?.Invoke();
+                return;
+            }
 
             ButtonClickEventArgs args = new ButtonClickEventArgs();
-            if (Solids.Instance.InputService.MouseScreenPosition.Intersects(ActiveButton.Position.Value))
+            if (Solids.Instance.InputService.MouseScreenPosition.Intersects(ActiveButton.ActualPosition))
             {
                 args.ClickSource = ClickSource.Mouse;
 
                 args.ClickPosition =
                     new Vector2(
-                        (Solids.Instance.InputService.MouseScreenPosition.X - ActiveButton.Position.Value.X) / ActiveButton.Position.Value.Width,
-                        (Solids.Instance.InputService.MouseScreenPosition.Y - ActiveButton.Position.Value.Y) / ActiveButton.Position.Value.Height
+                        (Solids.Instance.InputService.MouseScreenPosition.X - ActiveButton.ActualPosition.X) / ActiveButton.ActualPosition.Width,
+                        (Solids.Instance.InputService.MouseScreenPosition.Y - ActiveButton.ActualPosition.Y) / ActiveButton.ActualPosition.Height
 
                     );
             }
@@ -523,54 +652,130 @@ namespace Breeze.Screens
             if (ActiveButton is InteractiveAsset interactiveAsset)
             {
                 args.Sender = interactiveAsset;
+                ActiveButton.InternalClickEvent?.Invoke(args);
                 interactiveAsset.FireEvent(interactiveAsset.OnClickEvent, new object[] { args });
             }
 
         }
 
 
+        public ButtonClickEventArgs GetClickArgs()
+        {
+            ButtonClickEventArgs args = new ButtonClickEventArgs();
+            if (Solids.Instance.InputService.MouseScreenPosition.Intersects(ActiveButton.ActualPosition))
+            {
+                args.ClickSource = ClickSource.Mouse;
 
+                args.ClickPosition =
+                    new Vector2(
+                        (Solids.Instance.InputService.MouseScreenPosition.X - ActiveButton.ActualPosition.X) / ActiveButton.ActualPosition.Width,
+                        (Solids.Instance.InputService.MouseScreenPosition.Y - ActiveButton.ActualPosition.Y) / ActiveButton.ActualPosition.Height
+                    );
+            }
+
+
+            if (ActiveButton is InteractiveAsset interactiveAsset)
+            {
+                args.Sender = interactiveAsset;
+            }
+
+            return args;
+        }
 
         public void HandlePress()
         {
             if (ActiveButton == null) return;
 
-            ButtonClickEventArgs args = new ButtonClickEventArgs();
-            if (Solids.Instance.InputService.MouseScreenPosition.Intersects(ActiveButton.Position.Value))
-            {
-                args.ClickSource = ClickSource.Mouse;
+            var args = GetClickArgs();
 
-                args.ClickPosition = new Vector2((Solids.Instance.InputService.MouseScreenPosition.X - ActiveButton.Position.Value.X) / ActiveButton.Position.Value.Width, (Solids.Instance.InputService.MouseScreenPosition.Y - ActiveButton.Position.Value.Y) / ActiveButton.Position.Value.Height);
+            if (ActiveButton is InteractiveAsset interactiveAsset)
+            {
+                interactiveAsset.FireEvent(interactiveAsset.OnPressEvent, new object[] { args });
             }
 
-            if (ActiveButton is StaticButtonAsset bActiveButton)
-            {
-
-                Task backgroundWorkTask = Task.Run(() => bActiveButton?.ButtonDown?.Fire(args));
-
-            }
         }
-
 
         public void HandleRelease()
         {
             if (ActiveButton == null) return;
 
+            var args = GetClickArgs();
+
+            if (ActiveButton is InteractiveAsset interactiveAsset)
+            {
+                interactiveAsset.FireEvent(interactiveAsset.OnReleaseEvent, new object[] { args });
+            }
+
+        }
+
+        public void HandleRightStickUp()
+        {
+            if (ActiveButton == null) return;
+
+            if (ActiveButton is InteractiveAsset interactiveAsset)
+            {
+                ButtonClickEventArgs args = new ButtonClickEventArgs();
+                interactiveAsset.InternalStickUpEvent?.Invoke(args);
+            }
+        }
+
+        public void HandleRightStickDown()
+        {
+            if (ActiveButton == null) return;
+
+            if (ActiveButton is InteractiveAsset interactiveAsset)
+            {
+                ButtonClickEventArgs args = new ButtonClickEventArgs();
+                interactiveAsset.InternalStickDownEvent?.Invoke(args);
+            }
+        }
+
+        public void HandleHeld()
+        {
+            if (ActiveButton == null) return;
+
             ButtonClickEventArgs args = new ButtonClickEventArgs();
-            if (Solids.Instance.InputService.MouseScreenPosition.Intersects(ActiveButton.Position.Value))
+            if (Solids.Instance.InputService.MouseScreenPosition.Intersects(ActiveButton.ActualPosition))
             {
                 args.ClickSource = ClickSource.Mouse;
 
-                args.ClickPosition = new Vector2((Solids.Instance.InputService.MouseScreenPosition.X - ActiveButton.Position.Value.X) / ActiveButton.Position.Value.Width, (Solids.Instance.InputService.MouseScreenPosition.Y - ActiveButton.Position.Value.Y) / ActiveButton.Position.Value.Height);
+                args.ClickPosition =
+                    new Vector2(
+                        (Solids.Instance.InputService.MouseScreenPosition.X - ActiveButton.ActualPosition.X) / ActiveButton.ActualPosition.Width,
+                        (Solids.Instance.InputService.MouseScreenPosition.Y - ActiveButton.ActualPosition.Y) / ActiveButton.ActualPosition.Height
+
+                    );
             }
 
-            if (ActiveButton is StaticButtonAsset bActiveButton)
+            if (ActiveButton is InteractiveAsset interactiveAsset)
             {
-
-                Task backgroundWorkTask = Task.Run(() => bActiveButton?.ButtonUp?.Fire(args));
-
+                args.Sender = interactiveAsset;
+                ActiveButton.InternalPressEvent?.Invoke(args);
+                //interactiveAsset.FireEvent(interactiveAsset.OnClickEvent, new object[] { args });
             }
+
         }
+
+
+        //public void HandleRelease()
+        //{
+        //    if (ActiveButton == null) return;
+
+        //    ButtonClickEventArgs args = new ButtonClickEventArgs();
+        //    if (Solids.Instance.InputService.MouseScreenPosition.Intersects(ActiveButton.Position.Value))
+        //    {
+        //        args.ClickSource = ClickSource.Mouse;
+
+        //        args.ClickPosition = new Vector2((Solids.Instance.InputService.MouseScreenPosition.X - ActiveButton.Position.Value.X) / ActiveButton.Position.Value.Width, (Solids.Instance.InputService.MouseScreenPosition.Y - ActiveButton.Position.Value.Y) / ActiveButton.Position.Value.Height);
+        //    }
+
+        //    if (ActiveButton is StaticButtonAsset bActiveButton)
+        //    {
+
+        //        Task backgroundWorkTask = Task.Run(() => bActiveButton?.ButtonUp?.Fire(args));
+
+        //    }
+        //}
 
 
         public virtual void Draw(GameTime gameTime)
@@ -645,7 +850,8 @@ namespace Breeze.Screens
 
         void DrawAssets(List<DataboundAsset> assets, float opacity, Texture2D preDrawTexture)
         {
-            foreach (DataboundAsset asset in assets.Where(t => !t.IsHidden.Value))
+            var nonHiddenAssets = assets.Where(t => !t.IsHiddenOrParentHidden());
+            foreach (DataboundAsset asset in nonHiddenAssets)
             {
                 Solids.Instance.SpriteBatch.Scissor = asset.Clip.ToRectangle();
 
@@ -706,7 +912,11 @@ namespace Breeze.Screens
         {
             BindingEvents = new InputBindingEvents(InputBindings.UserInterface.ClickButton, HandleClick);
             BindingEvents.Add(InputBindings.UserInterface.ButtonDown, HandlePress);
-            BindingEvents.Add(InputBindings.UserInterface.ButtonDown, HandleRelease);
+            BindingEvents.Add(InputBindings.UserInterface.ButtonHeld, HandleHeld);
+            BindingEvents.Add(InputBindings.UserInterface.ButtonUp, HandleRelease);
+
+            BindingEvents.Add(new InputService.InputBinding(new InputService.InputStack(new InputService.GamepadControl(Buttons.RightThumbstickUp, InputService.PressType.PressThenHolding))), HandleRightStickUp);
+            BindingEvents.Add(new InputService.InputBinding(new InputService.InputStack(new InputService.GamepadControl(Buttons.RightThumbstickDown, InputService.PressType.PressThenHolding))), HandleRightStickDown);
         }
 
         public void FireCloseEvent()
